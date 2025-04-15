@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] ParticleSystem miningEffect;
     public void StartGame()
     {
         Debug.Log("Wystartowa³eœ grê");
@@ -11,10 +10,6 @@ public class MainMenu : MonoBehaviour
     public void RandomGame()
     {
         Debug.Log("Random game started");
-    }
-    public void HighScore()
-    {
-        print("wypisz highscore");
     }
     public void Exit()
     {
@@ -28,8 +23,5 @@ public class MainMenu : MonoBehaviour
     {
             GameObject.FindGameObjectWithTag("Music").GetComponent<MusicClass>().MuteMusic();
     }
-    private void Update()
-    {
-        //Input.mousePosition;
-    }
+
 }
