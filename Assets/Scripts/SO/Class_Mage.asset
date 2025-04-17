@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146e06d330df01745b173eea49dd9467, type: 3}
   m_Name: Class_Mage
   m_EditorClassIdentifier: 
-  className: 
+  className: Mage
   baseStats:
     MaxHP: 0
     CurrentHP: 0
-    Strength: 0
-    Perception: 0
-    Endurance: 0
-    Charisma: 0
-    Intelligence: 0
-    Agility: 0
-    Luck: 0
+    Strength: 5
+    Perception: 5
+    Endurance: 5
+    Charisma: 5
+    Intelligence: 10
+    Agility: 5
+    Luck: 7
     Attack: 0
     Defense: 0
     Mana: 0

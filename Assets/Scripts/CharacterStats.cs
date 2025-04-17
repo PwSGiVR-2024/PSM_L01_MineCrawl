@@ -23,6 +23,7 @@ public class CharacterStats
         Mana,
         MaxMana
     }
+    switch
     [SerializeField] private int MaxHP;
     [SerializeField] private int CurrentHP;
     [SerializeField] private int Strength;
@@ -78,7 +79,10 @@ public class CharacterStats
             StatType.MaxMana => MaxMana,
             _ => throw new ArgumentOutOfRangeException(nameof(stat), stat, null)
         };
+
+
     }
+
     public void Add(CharacterStats other)
     {
         foreach (StatType stat in Enum.GetValues(typeof(StatType)))
