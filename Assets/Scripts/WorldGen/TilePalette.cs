@@ -4,9 +4,9 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "TilePalette", menuName = "Scriptable Objects/TilePalette")]
 public class TilePalette : ScriptableObject
 {
-    public Tile[] tiles;
+    public TileBase[] tiles;
     private void OnEnable()
     {
-        tiles = Resources.LoadAll<Tile>("Tile Pallete/TP Grass");
+        //tiles = Resources.LoadAll<Tile>("Tile Pallete/TP Grass");
     }
 }
