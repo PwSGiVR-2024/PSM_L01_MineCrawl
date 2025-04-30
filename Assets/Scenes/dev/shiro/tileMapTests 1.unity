@@ -332,10 +332,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePallete: {fileID: 11400000, guid: a63049c8166e9ac489ddf1b89d351bc6, type: 2}
-  tilePalleteStone: []
-  tile: {fileID: 11400000, guid: 503914639ae436b4e82c313961715c35, type: 2}
-  rootTile: {fileID: 11400000, guid: 5fe40d7b004adde4293bdf59101e1f97, type: 2}
-  map: {fileID: 1403366946}
+  tile: {fileID: 11400000, guid: 34303d25145ab104f8fabf97fe65552d, type: 2}
+  map: {fileID: 0}
 --- !u!4 &386576541
 Transform:
   m_ObjectHideFlags: 0
