@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
         Debug.Log("Wystartowa³eœ grê");
-        //SceneManager.LoadScene (sceneBuildIndex:/*Put the number here*/);
+        SceneManager.LoadScene (sceneBuildIndex:1);
     }
     public void RandomGame()
     {

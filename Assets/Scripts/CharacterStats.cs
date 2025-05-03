@@ -23,7 +23,7 @@ public class CharacterStats
         Mana,
         MaxMana
     }
-    switch
+    
     [SerializeField] private int MaxHP;
     [SerializeField] private int CurrentHP;
     [SerializeField] private int Strength;
