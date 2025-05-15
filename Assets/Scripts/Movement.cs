@@ -55,6 +55,16 @@ public class Movement : MonoBehaviour
             Vector3Int currentGridPos = grid.WorldToCell(transform.position);
             Vector3Int moveDirInt = Vector3Int.RoundToInt(direction);
             Vector3Int newPosition = currentGridPos + moveDirInt;
+            GameObject enemy;
+            if (IsEnemyAtPosition(newPosition, out enemy))
+            {
+                Debug.Log("Spotkano przeciwnika: " + enemy.name);
+                // tutaj mo¿esz np. za³adowaæ scenê walki:
+                // SceneManager.LoadScene("BattleScene");
+                // lub wywo³aæ jak¹œ metodê:
+                enemy.GetComponent<Enemy>().StartBattle();
+                return;
+            }
 
             //Próbujemy ukoœnie
             if (IsWalkable(newPosition))
@@ -112,4 +122,22 @@ public class Movement : MonoBehaviour
         TileBase tile = walkableTilemap.GetTile(position);
         return tile != null; 
     }
+    bool IsEnemyAtPosition(Vector3Int gridPos, out GameObject enemy)
+    {
+        Vector3 worldPos = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0); // œrodek kafelka
+        Collider2D[] hits = Physics2D.OverlapCircleAll(worldPos, 0.1f);
+
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Enemy"))
+            {
+                enemy = hit.gameObject;
+                return true;
+            }
+        }
+
+        enemy = null;
+        return false;
+    }
+
 }

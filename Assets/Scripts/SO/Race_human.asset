@@ -27,6 +27,7 @@ MonoBehaviour:
     Defense: 0
     Mana: 0
     MaxMana: 0
-  startingSkills: []
+  startingSkills:
+  - {fileID: 11400000, guid: c9257f71f0b4c424dbc66e0fadb3bd0b, type: 2}
   hpPerEndurance: 10
   manaPerIntelligence: 5

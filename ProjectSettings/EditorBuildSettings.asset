@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/dev/shiro/tileMapTests 2.unity
     guid: 35bbc6eeddec180429ae75a9b206baa7
+  - enabled: 1
+    path: Assets/Scenes/dev/shiro/BattleScene.unity
+    guid: 120aada67d39f034d82e4769a160c2ff
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

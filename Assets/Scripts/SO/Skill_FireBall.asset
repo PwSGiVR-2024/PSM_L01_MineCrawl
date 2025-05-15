@@ -16,3 +16,4 @@ MonoBehaviour:
   manaCost: 10
   damage: 10
   damagetype: 0
+  category: 1

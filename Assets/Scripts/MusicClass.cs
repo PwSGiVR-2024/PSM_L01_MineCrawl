@@ -1,12 +1,20 @@
 using UnityEngine;
-using UnityEngine.Audio;
 
 public class MusicClass : MonoBehaviour
 {
+    private static MusicClass instance;
     private AudioSource _audioSource;
+
     private void Awake()
     {
-        DontDestroyOnLoad(transform.gameObject);
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject); // ju¿ istnieje inny, usuñ siebie
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
         _audioSource = GetComponent<AudioSource>();
     }
 
@@ -14,5 +22,4 @@ public class MusicClass : MonoBehaviour
     {
         _audioSource.mute = !_audioSource.mute;
     }
-
 }

@@ -9,6 +9,8 @@ public class CharacterSO : ScriptableObject, ICharacter
     [SerializeField] private CharacterStats stats;
     [SerializeField] private CharacterRaceSO race;
     [SerializeField] private CharacterClassSO characterClass;
+    [SerializeField] private Sprite battleSprite;
+    public Sprite BattleSprite => battleSprite;
 
     public string Name => characterName;
     public int Level => level;
