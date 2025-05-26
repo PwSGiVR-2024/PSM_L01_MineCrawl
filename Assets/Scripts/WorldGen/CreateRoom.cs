@@ -8,19 +8,12 @@ namespace Assets.Scripts.CreateRoom
 {
     public class CreateRoom : MonoBehaviour
     {
-        public TilePalette tilePallete;
-        public TileBase[] tilePalleteStone;//tests
         public struct MapData
         {
             public int width;
             public int height;
             public int[][] mapArray;
         }
-        public TileBase tile;
-        public TileBase rootTile; //tests
-        public TileBase pathTile; //tests
-        public Tilemap groundMap;
-        public Tilemap wallsMap;
 
         public struct Room
         {
@@ -35,23 +28,36 @@ namespace Assets.Scripts.CreateRoom
                 this.height = height;
             }
         }
-        private static List<Room> rooms;
+
+        //public TilePalette tilePallete;
+        public TileBase[] tilePallete;
+        public TileBase[] tilePalleteStone;//tests
+        public TileBase tile;
+        public TileBase rootTile; //tests
+        public TileBase pathTile; //tests
+        public Tilemap groundMap;
+        public Tilemap wallsMap;
+
+        protected static List<Room> rooms;
+        protected MapData mapData;
 
         private void Awake()
         {
             rooms = new List<Room>();
-            tilePallete.tiles = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
-            Array.Resize(ref tilePallete.tiles, 32); //include only clean grass
+            //tilePallete.tiles = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
+            tilePallete = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
+            //Array.Resize(ref tilePallete.tiles, 32); //include only clean grass
+            Array.Resize(ref tilePallete, 32); //include only clean grass
             tilePalleteStone = Resources.LoadAll<TileBase>("Tile Palette/TP Wall");
+
+            mapData = GenerateArray(64, 64);
+            mapData = GenerateFloor(mapData);
+            mapData = GenerateCorridors(mapData);
+            RenderMap(mapData, tile);
         }
 
         void Start()
         {
-            MapData mapData = GenerateArray(64, 64);
-            mapData = GenerateFloor(mapData);
-            mapData = GenerateCorridors(mapData);//test
-            RenderMap(mapData, tile);
-
             //test
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             player.transform.Translate(rooms[0].rootCoords.x, rooms[0].rootCoords.y, 0);
@@ -62,7 +68,7 @@ namespace Assets.Scripts.CreateRoom
             if (Input.GetKeyDown(KeyCode.R))
             {
                 rooms.Clear();
-                MapData mapData = GenerateArray(64, 64);
+                mapData = GenerateArray(64, 64);
                 mapData = GenerateFloor(mapData);
                 mapData = GenerateCorridors(mapData);
                 RenderMap(mapData, tile);
@@ -95,13 +101,14 @@ namespace Assets.Scripts.CreateRoom
                     }
                     else
                     {
-                        wallsMap.SetTile(new Vector3Int(x, y, 0), tilePallete.tiles[mapData.mapArray[x][y]]);
+                        //wallsMap.SetTile(new Vector3Int(x, y, 0), tilePallete.tiles[mapData.mapArray[x][y]]);
+                        wallsMap.SetTile(new Vector3Int(x, y, 0), tilePallete[mapData.mapArray[x][y]]);
                     }
                 }
             }
         }
 
-        private MapData GenerateArray(int width, int height)
+        protected MapData GenerateArray(int width, int height)
         {
             MapData mapData = new MapData();
             mapData.width = width;
@@ -117,13 +124,14 @@ namespace Assets.Scripts.CreateRoom
             {
                 for (int y = 0; y < height; y++)
                 {
-                    mapData.mapArray[x][y] = Mathf.RoundToInt(UnityEngine.Random.Range(0, tilePallete.tiles.Length));
+                    //mapData.mapArray[x][y] = Mathf.RoundToInt(UnityEngine.Random.Range(0, tilePallete.tiles.Length));
+                    mapData.mapArray[x][y] = Mathf.RoundToInt(UnityEngine.Random.Range(0, tilePallete.Length));
                 }
             }
             return mapData;
         }
 
-        private static MapData GenerateFloor(MapData mapData)
+        protected static MapData GenerateFloor(MapData mapData)
         {
             int numberOfRooms = Mathf.RoundToInt(UnityEngine.Random.Range(5, 10));
 
@@ -132,7 +140,7 @@ namespace Assets.Scripts.CreateRoom
             return mapData;
         }
 
-        private static MapData GenerateRoom(MapData mapData, int count, int assignValue = -1)
+        protected static MapData GenerateRoom(MapData mapData, int count, int assignValue = -1)
         {
             int padding = 5;
             int width = mapData.width - padding;
@@ -192,7 +200,7 @@ namespace Assets.Scripts.CreateRoom
             return mapData;
         }
 
-        private static MapData GenerateCorridors(MapData mapData)
+        protected static MapData GenerateCorridors(MapData mapData)
         {
             MapData tempMapData = mapData;
 
@@ -206,9 +214,9 @@ namespace Assets.Scripts.CreateRoom
             return tempMapData;
         }
 
-        private static (int x, int y) GenerateTeleports()//? make sure we can move throughout whole map even if corridors didnt generate enough
+        public Room GetRandomRoom()
         {
-            return (0, 0);
+            return rooms[UnityEngine.Random.Range(0, rooms.Count)];
         }
     }
 }

@@ -138,12 +138,6 @@ namespace Assets.Scripts.WorldGen
                 {
                     weightedDirections[key] = (key == direction) ? Mathf.Max(0, weightedDirections[direction] + amount) : Mathf.Max(0, weightedDirections[direction] - amount); ;
                 }
-
-                Debug.Log("------------------------------------------------");
-                Debug.Log(Directions.Right);
-                Debug.Log(Directions.Left);
-                Debug.Log(Directions.Up);
-                Debug.Log(Directions.Down);
             }
 
             public static Vector2Int GetRandom()
