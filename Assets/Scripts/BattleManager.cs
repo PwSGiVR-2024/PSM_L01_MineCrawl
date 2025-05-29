@@ -2,18 +2,29 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
+
 public static class BattleTransferData
 {
     public static CharacterSO playerData;
     public static CharacterSO enemyData;
+
+    public static string previousSceneName = "MainScene";
+    public static Vector3 playerPosition;
+    public static string defeatedEnemyID;
+    public static bool cameFromBattle = false;
+
 }
+
+
 public class BattleManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerNameText;
     [SerializeField] private TextMeshProUGUI playerHPText;
+    [SerializeField] private TextMeshProUGUI playerMPText;
     [SerializeField] private TextMeshProUGUI enemyNameText;
     [SerializeField] private TextMeshProUGUI enemyHPText;
-
+    [SerializeField] private TextMeshProUGUI enemyMPText;
     [SerializeField] private GameObject characterVisualPrefab;
     [SerializeField] private Transform playerSpawnPoint;
     [SerializeField] private Transform enemySpawnPoint;
@@ -57,9 +68,11 @@ public class BattleManager : MonoBehaviour
     {
         playerNameText.text = player.Name;
         playerHPText.text = $"HP: {player.Stats.GetStatValue(CharacterStats.StatType.CurrentHP)}/{player.Stats.GetStatValue(CharacterStats.StatType.MaxHP)}";
+        playerMPText.text = $"MP: {player.Stats.GetStatValue(CharacterStats.StatType.Mana)}/{player.Stats.GetStatValue(CharacterStats.StatType.MaxHP)}";
 
         enemyNameText.text = enemy.Name;
         enemyHPText.text = $"HP: {enemy.Stats.GetStatValue(CharacterStats.StatType.CurrentHP)}/{enemy.Stats.GetStatValue(CharacterStats.StatType.MaxHP)}";
+        enemyMPText.text = $"MP: {enemy.Stats.GetStatValue(CharacterStats.StatType.Mana)}/{enemy.Stats.GetStatValue(CharacterStats.StatType.MaxMana)}";
     }
 
     void SetupSkillButtons()
@@ -84,7 +97,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    void PlayerAttack(ISkill skill)
+    public void PlayerAttack(SkillsSO skill)
     {
         if (player.Stats.GetStatValue(CharacterStats.StatType.Mana) < skill.ManaCost)
         {
@@ -105,6 +118,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+
     IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(1f);
@@ -122,6 +136,7 @@ public class BattleManager : MonoBehaviour
     void EndBattle(bool playerWon)
     {
         Debug.Log(playerWon ? "Wygra³eœ walkê!" : "Przegra³eœ...");
-        // Tutaj mo¿esz za³adowaæ inn¹ scenê lub pokazaæ ekran koñca walki
+        SceneManager.LoadScene(BattleTransferData.previousSceneName);
     }
+
 }

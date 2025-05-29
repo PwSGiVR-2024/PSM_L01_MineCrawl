@@ -62,7 +62,7 @@ public class Movement : MonoBehaviour
                 // tutaj mo¿esz np. za³adowaæ scenê walki:
                 // SceneManager.LoadScene("BattleScene");
                 // lub wywo³aæ jak¹œ metodê:
-                enemy.GetComponent<Enemy>().StartBattle();
+                enemy.GetComponent<Enemy>().Battle();
                 return;
             }
 

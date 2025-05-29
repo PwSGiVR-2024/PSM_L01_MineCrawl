@@ -3,13 +3,36 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using static PlayerStats;
+using System.Collections;
 
 public class RPGMenuManager : MonoBehaviour
 {
+    IEnumerator InitializePlayer()
+    {
+        while (battleManager.PlayerCharacter == null)
+            yield return null;
+
+        playerSO = battleManager.PlayerCharacter;
+        player = playerSO;
+
+        if (player == null)
+        {
+            Debug.LogError("Player ICharacter is STILL null in RPGMenuManager!");
+            yield break;
+        }
+
+        attackButton.onClick.AddListener(() => OpenSubMenu("Attack"));
+        magicButton.onClick.AddListener(() => OpenSubMenu("Magic"));
+        itemButton.onClick.AddListener(() => OpenSubMenu("Items"));
+    }
+
     [Header("Reference to BattleManager")]
     [SerializeField] private BattleManager battleManager;
 
-    private CharacterSO player;
+    private CharacterSO playerSO;
+    private ICharacter player;
+
+    public CharacterSO PlayerCharacter => playerSO;
 
     [Header("Menu Panels")]
     [SerializeField] private GameObject panelMainMenu;
@@ -35,16 +58,17 @@ public class RPGMenuManager : MonoBehaviour
             return;
         }
 
-        // Pobierz playera z BattleManagera
-        player = battleManager.PlayerCharacter;
-
-        attackButton.onClick.AddListener(() => OpenSubMenu("Attack"));
-        magicButton.onClick.AddListener(() => OpenSubMenu("Magic"));
-        itemButton.onClick.AddListener(() => OpenSubMenu("Items"));
+        StartCoroutine(InitializePlayer());
     }
 
-    void OpenSubMenu(string category)
+    public void OpenSubMenu(string category)
     {
+        if (player == null)
+        {
+            Debug.LogError("Player is null in OpenSubMenu");
+            return;
+        }
+
         SkillCategory skillCategory;
 
         switch (category)
@@ -89,7 +113,6 @@ public class RPGMenuManager : MonoBehaviour
             }
         }
 
-        // Dodaj Back Button jako ostatni
         GameObject backBtnObj = Instantiate(skillButtonPrefab, subMenuButtonContainer);
         TextMeshProUGUI backTxt = backBtnObj.GetComponentInChildren<TextMeshProUGUI>();
         if (backTxt != null) backTxt.text = "← Wróć";
@@ -100,9 +123,10 @@ public class RPGMenuManager : MonoBehaviour
 
     void UseSkill(SkillsSO skill)
     {
-        Debug.Log($"Użyto skilla: {skill.SkillName}, koszt many: {skill.ManaCost}");
-        // Tutaj możesz wywołać logikę użycia skilla na przeciwniku itp.
+        battleManager.PlayerAttack(skill);
+        BackToMain(); // po ataku wróć do menu głównego
     }
+
 
     void BackToMain()
     {
@@ -110,7 +134,7 @@ public class RPGMenuManager : MonoBehaviour
         panelMainMenu.SetActive(true);
     }
 
-    public List<SkillsSO> GetAllCharacterSkills(CharacterSO character)
+    public List<SkillsSO> GetAllCharacterSkills(ICharacter character)
     {
         List<SkillsSO> allSkills = new();
 

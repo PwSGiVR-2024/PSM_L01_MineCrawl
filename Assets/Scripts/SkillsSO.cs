@@ -26,6 +26,7 @@ public class SkillsSO : ScriptableObject, ISkill
     public virtual void Activate(ICharacter user, ICharacter target)
     {
         Debug.Log($"{user.Name} uzywa {skillName} na {target.Name} zadając {damage} typu {damagetype} (koszt many: {manaCost})");
+        target.TakeDamage(damage );
     }
 }
 

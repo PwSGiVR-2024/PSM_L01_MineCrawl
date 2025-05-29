@@ -4624,6 +4624,50 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &2046340824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2046340826}
+  - component: {fileID: 2046340825}
+  m_Layer: 0
+  m_Name: GameMan
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2046340825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046340824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ba0b7485affcfd41b3dd90412c70f71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2046340826
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046340824}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.6224532, y: 2.1007147, z: -0.11165881}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2492223792277041736
 GameObject:
   m_ObjectHideFlags: 0
@@ -4777,6 +4821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f173b6efd31e1e34385cdf568e4eb873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyID: 
 --- !u!70 &8313317061764636351
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -4907,3 +4952,4 @@ SceneRoots:
   - {fileID: 1373857930}
   - {fileID: 7125458896274059858}
   - {fileID: 8313317061764636349}
+  - {fileID: 2046340826}
