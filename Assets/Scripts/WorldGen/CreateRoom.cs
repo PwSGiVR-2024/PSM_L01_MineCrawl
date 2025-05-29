@@ -40,6 +40,7 @@ namespace Assets.Scripts.CreateRoom
 
         protected static List<Room> rooms;
         protected MapData mapData;
+        protected FloorRenderer renderer;
 
         private void Awake()
         {
@@ -53,59 +54,17 @@ namespace Assets.Scripts.CreateRoom
             mapData = GenerateArray(64, 64);
             mapData = GenerateFloor(mapData);
             mapData = GenerateCorridors(mapData);
-            RenderMap(mapData, tile);
+
+            renderer = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorRenderer>();
+            renderer.RenderMap(mapData);
         }
 
         void Start()
         {
             //test
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-            player.transform.Translate(rooms[0].rootCoords.x, rooms[0].rootCoords.y, 0);
-        }
-
-        private void Update()//test
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                rooms.Clear();
-                mapData = GenerateArray(64, 64);
-                mapData = GenerateFloor(mapData);
-                mapData = GenerateCorridors(mapData);
-                RenderMap(mapData, tile);
-
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                player.transform.Translate(rooms[0].rootCoords.x, rooms[0].rootCoords.y, 0);
-            }
-        }
-
-        public void RenderMap(MapData mapData, TileBase tile)
-        {
-            groundMap.ClearAllTiles();
-            wallsMap.ClearAllTiles();
-            for (int x = 0; x < mapData.width; x++)
-            {
-                for (int y = 0; y < mapData.height; y++)
-                {
-                    if (mapData.mapArray[x][y] == -1)
-                    {
-                        groundMap.SetTile(new Vector3Int(x, y, 0), rootTile);
-
-                    }
-                    else if (mapData.mapArray[x][y] == -2)
-                    {
-                        groundMap.SetTile(new Vector3Int(x, y, 0), tile);
-                    }
-                    else if (mapData.mapArray[x][y] == -3)
-                    {
-                        groundMap.SetTile(new Vector3Int(x, y, 0), pathTile);
-                    }
-                    else
-                    {
-                        //wallsMap.SetTile(new Vector3Int(x, y, 0), tilePallete.tiles[mapData.mapArray[x][y]]);
-                        wallsMap.SetTile(new Vector3Int(x, y, 0), tilePallete[mapData.mapArray[x][y]]);
-                    }
-                }
-            }
+            var room = GetRandomRoom();
+            player.transform.Translate(room.rootCoords.x, room.rootCoords.y, 0);
         }
 
         protected MapData GenerateArray(int width, int height)

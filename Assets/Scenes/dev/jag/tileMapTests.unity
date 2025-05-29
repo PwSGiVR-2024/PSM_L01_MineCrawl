@@ -423,6 +423,30 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1 &432121867 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2232222602253301586, guid: 95b07919f83dfd04d98198878f38cb9f, type: 3}
+  m_PrefabInstance: {fileID: 4145271215176059586}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &432121871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 432121867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630596bdead1e354bb34adc4bba00c05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundMap: {fileID: 1403366946}
+  wallsMap: {fileID: 1636998431}
+  tilePallete:
+  - {fileID: 0}
+  rootTile: {fileID: 11400000, guid: 5fe40d7b004adde4293bdf59101e1f97, type: 2}
+  roomTile: {fileID: 11400000, guid: 503914639ae436b4e82c313961715c35, type: 2}
+  pathTile: {fileID: 11400000, guid: f5945c4f4a016ae419bd0fb1152e2d1a, type: 2}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -4615,7 +4639,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2232222602253301586, guid: 95b07919f83dfd04d98198878f38cb9f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 432121871}
   m_SourcePrefab: {fileID: 100100000, guid: 95b07919f83dfd04d98198878f38cb9f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

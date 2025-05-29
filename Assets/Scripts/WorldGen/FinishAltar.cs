@@ -1,35 +1,56 @@
-using Assets.Scripts.CreateRoom;
-using System;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
-public class FinishAltar : CreateRoom
+public class FinishAltar : MonoBehaviour
 {
-    private void Awake()
-    {
-        wallsMap = GameObject.Find("Walls")?.GetComponent<Tilemap>();
-        print(wallsMap);
-        groundMap = GameObject.Find("Ground")?.GetComponent<Tilemap>();
-        print(groundMap);
-    }
+    private int currentFloor;
+    private FloorChanger floorChanger;
+    private bool playerInRange;
+    private GameObject player;
 
+    private void Start()
+    {
+        floorChanger = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorChanger>();
+        currentFloor = 0;
+        playerInRange = false;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
-        {   
-            rooms.Clear();
-            //tilePallete.tiles = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
-            tilePallete = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
-            //Array.Resize(ref tilePallete.tiles, 32); //include only clean grass
-            Array.Resize(ref tilePallete, 32); //include only clean grass
-            tilePalleteStone = Resources.LoadAll<TileBase>("Tile Palette/TP Wall");
-
-            mapData = GenerateArray(64, 64);
-            mapData = GenerateFloor(mapData);
-            mapData = GenerateCorridors(mapData);
-            RenderMap(mapData, tile);
+        if (collision.CompareTag("Player"))
+        {
+            playerInRange = true;
+            player = collision.gameObject;
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            playerInRange = false;
+            player = null;
+        }
+    }
+
+    private void Update()
+    {
+        if (playerInRange)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                floorChanger.ChangeFloor(currentFloor);
+                currentFloor++;
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (currentFloor > 0)
+                {
+                    floorChanger.ChangeFloor(currentFloor);
+                    currentFloor--;
+                }
+            }
+        }
+        
     }
 
 }
