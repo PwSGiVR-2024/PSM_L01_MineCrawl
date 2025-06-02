@@ -68,7 +68,7 @@ public class BattleManager : MonoBehaviour
     {
         playerNameText.text = player.Name;
         playerHPText.text = $"HP: {player.Stats.GetStatValue(CharacterStats.StatType.CurrentHP)}/{player.Stats.GetStatValue(CharacterStats.StatType.MaxHP)}";
-        playerMPText.text = $"MP: {player.Stats.GetStatValue(CharacterStats.StatType.Mana)}/{player.Stats.GetStatValue(CharacterStats.StatType.MaxHP)}";
+        playerMPText.text = $"MP: {player.Stats.GetStatValue(CharacterStats.StatType.Mana)}/{player.Stats.GetStatValue(CharacterStats.StatType.MaxMana)}";
 
         enemyNameText.text = enemy.Name;
         enemyHPText.text = $"HP: {enemy.Stats.GetStatValue(CharacterStats.StatType.CurrentHP)}/{enemy.Stats.GetStatValue(CharacterStats.StatType.MaxHP)}";
@@ -135,6 +135,9 @@ public class BattleManager : MonoBehaviour
 
     void EndBattle(bool playerWon)
     {
+        /*player.SpentMana(player.Stats.GetStatValue(CharacterStats.StatType.MaxMana) - player.Stats.GetStatValue(CharacterStats.StatType.Mana));
+        player.TakeDamage(player.Stats.GetStatValue(CharacterStats.StatType.MaxHP) - player.Stats.GetStatValue(CharacterStats.StatType.Mana));
+*/
         Debug.Log(playerWon ? "Wygra³eœ walkê!" : "Przegra³eœ...");
         SceneManager.LoadScene(BattleTransferData.previousSceneName);
     }

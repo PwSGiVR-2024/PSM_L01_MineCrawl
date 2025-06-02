@@ -1761,8 +1761,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNameText: {fileID: 868521215}
   playerHPText: {fileID: 1891035811}
+  playerMPText: {fileID: 2023956243}
   enemyNameText: {fileID: 1348998305}
   enemyHPText: {fileID: 2018517452}
+  enemyMPText: {fileID: 2039655777}
   characterVisualPrefab: {fileID: 2331666600436008260, guid: 8aaf666601119c647a703fff394d43aa, type: 3}
   playerSpawnPoint: {fileID: 298179630}
   enemySpawnPoint: {fileID: 1592679423}
@@ -3077,7 +3079,7 @@ GameObject:
   - component: {fileID: 2039655778}
   - component: {fileID: 2039655777}
   m_Layer: 5
-  m_Name: Enemy HP
+  m_Name: Enemy MP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

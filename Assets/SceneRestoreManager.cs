@@ -6,7 +6,7 @@ public class SceneRestoreManager : MonoBehaviour
     {
         if (BattleTransferData.cameFromBattle)
         {
-\
+
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
                 player.transform.position = BattleTransferData.playerPosition;
@@ -18,10 +18,10 @@ public class SceneRestoreManager : MonoBehaviour
                 if (defeatedEnemy != null)
                     Destroy(defeatedEnemy);
 
-                BattleTransferData.defeatedEnemyID = null; \
+                BattleTransferData.defeatedEnemyID = null; 
             }
 
-\
+
             BattleTransferData.cameFromBattle = false;
         }
     }

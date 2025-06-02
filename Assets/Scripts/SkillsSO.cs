@@ -15,6 +15,8 @@ public class SkillsSO : ScriptableObject, ISkill
     [SerializeField] private string skillName;
     [SerializeField] private int manaCost;
     [SerializeField] private int damage;
+    [SerializeField] private int hpCost;
+    [SerializeField] private float lifeSteal;
     [SerializeField] private damageType damagetype;
 
     [SerializeField] private SkillCategory category; // ← NOWE POLE
@@ -26,7 +28,20 @@ public class SkillsSO : ScriptableObject, ISkill
     public virtual void Activate(ICharacter user, ICharacter target)
     {
         Debug.Log($"{user.Name} uzywa {skillName} na {target.Name} zadając {damage} typu {damagetype} (koszt many: {manaCost})");
+
+        user.SpentMana(manaCost);
+        user.TakeDamage(hpCost);
         target.TakeDamage(damage );
+        if (lifeSteal>0)
+        {
+            int stolen = LifeSteal(target.Stats.GetStatValue(CharacterStats.StatType.CurrentHP), lifeSteal);
+            user.TakeDamage((int)-stolen);
+            Debug.Log(user.Name + " stolen" + stolen);
+        }
+    }
+    public virtual int LifeSteal(int hp, float percent)
+    {
+        return Mathf.CeilToInt(hp * percent);
     }
 }
 

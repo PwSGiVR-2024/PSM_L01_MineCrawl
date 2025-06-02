@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Vampire_slash
   m_EditorClassIdentifier: 
   skillName: Vampire slash
-  manaCost: -10
+  manaCost: 5
   damage: 10
+  hpCost: 5
+  lifeSteal: 0.1
   damagetype: 6
   category: 0
