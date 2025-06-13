@@ -4653,6 +4653,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba0b7485affcfd41b3dd90412c70f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterDataTemplate: {fileID: 11400000, guid: c83aab6b7420bb347b2d190129b5d935, type: 2}
+  characterPrefab: {fileID: 531045775040075554, guid: 3fa4cac4e1462904a9c79874cc2a5eae, type: 3}
+  spawnPoint: {fileID: 4158973313756352320, guid: 3fa4cac4e1462904a9c79874cc2a5eae, type: 3}
+  walk: {fileID: 48817294}
+  walkable: {fileID: 1403366946}
 --- !u!4 &2046340826
 Transform:
   m_ObjectHideFlags: 0
@@ -4706,7 +4711,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &6468983491080416615
 MonoBehaviour:
   m_ObjectHideFlags: 0

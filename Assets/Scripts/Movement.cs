@@ -4,8 +4,8 @@ using UnityEngine.Tilemaps;
 public class Movement : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 5f;
-    [SerializeField] Tilemap walkableTilemap;
-    [SerializeField] Grid grid;
+    public Tilemap walkableTilemap;
+    public Grid grid;
     [SerializeField] Camera PlayerCamera ;
     [SerializeField] private AudioClip footstepSound;
     private AudioSource audioSource;

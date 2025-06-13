@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b65b8847dc98e24429cbb944fa1038ed, type: 3}
-  m_Name: Race_human
+  m_Name: demon
   m_EditorClassIdentifier: 
-  raceName: human
+  battleSprite: {fileID: 21300000, guid: 8be52a197f038c846a1a72b51619fe85, type: 3}
+  raceName: demon
   baseStats:
     MaxHP: 0
     CurrentHP: 0

@@ -58,10 +58,10 @@ public class BattleManager : MonoBehaviour
     void SpawnSprites(CharacterSO playerSO, CharacterSO enemySO)
     {
         GameObject playerVisual = Instantiate(characterVisualPrefab, playerSpawnPoint.position, Quaternion.identity);
-        playerVisual.GetComponent<SpriteRenderer>().sprite = playerSO.BattleSprite;
+        playerVisual.GetComponent<SpriteRenderer>().sprite = playerSO.race.BattleSprite;
 
         GameObject enemyVisual = Instantiate(characterVisualPrefab, enemySpawnPoint.position, Quaternion.identity);
-        enemyVisual.GetComponent<SpriteRenderer>().sprite = enemySO.BattleSprite;
+        enemyVisual.GetComponent<SpriteRenderer>().sprite = enemySO.race.BattleSprite;
     }
 
     void UpdateUI()

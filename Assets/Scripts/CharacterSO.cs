@@ -4,13 +4,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CharacterSO", menuName = "RPG/Character")]
 public class CharacterSO : ScriptableObject, ICharacter
 {
-    [SerializeField] private string characterName;
+    [SerializeField] public string characterName;
     [SerializeField] private int level;
     [SerializeField] private CharacterStats stats;
-    [SerializeField] private CharacterRaceSO race;
-    [SerializeField] private CharacterClassSO characterClass;
-    [SerializeField] private Sprite battleSprite;
-    public Sprite BattleSprite => battleSprite;
+    [SerializeField] public CharacterRaceSO race;
+    [SerializeField] public CharacterClassSO characterClass;
 
     public string Name => characterName;
     public int Level => level;
