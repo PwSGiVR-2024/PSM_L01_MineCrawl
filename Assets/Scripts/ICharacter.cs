@@ -9,7 +9,7 @@ public interface ICharacter
     CharacterClassSO Class { get; }
 
     void TakeDamage(int amount);
-    void Heal(int amount);
+    void SpentMana(int amount);
     void UseSkill(ISkill skill, ICharacter target);
     void GainExperience(int amount);
 }

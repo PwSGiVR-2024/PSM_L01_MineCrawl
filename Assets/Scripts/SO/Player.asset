@@ -30,3 +30,4 @@ MonoBehaviour:
     MaxMana: 75
   race: {fileID: 11400000, guid: a8b8004eeea931b48a33f6159fb5340b, type: 2}
   characterClass: {fileID: 11400000, guid: 0e9910edb4c2a3247a2517a31464f4a3, type: 2}
+  battleSprite: {fileID: 21300000, guid: 14a01b2db26707f4ba977dea06cff0f7, type: 3}
