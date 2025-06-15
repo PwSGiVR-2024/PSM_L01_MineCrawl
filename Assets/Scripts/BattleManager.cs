@@ -6,17 +6,14 @@ using UnityEngine.SceneManagement;
 
 public static class BattleTransferData
 {
-    public static CharacterSO playerData;
-    public static CharacterSO enemyData;
+    public static CharacterInstance playerInstance;
+    public static CharacterInstance enemyInstance;
 
-    public static string previousSceneName = "MainScene";
-    public static Vector3 playerPosition;
     public static string defeatedEnemyID;
+    public static string previousSceneName;
+    public static Vector3 playerPosition;
     public static bool cameFromBattle = false;
-
 }
-
-
 public class BattleManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerNameText;
@@ -28,40 +25,28 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private GameObject characterVisualPrefab;
     [SerializeField] private Transform playerSpawnPoint;
     [SerializeField] private Transform enemySpawnPoint;
-
     [SerializeField] private Button[] skillButtons;
 
-    private CharacterSO playerSO;
-    private CharacterSO enemySO;
-
-    private ICharacter player;
-    private ICharacter enemy;
-
-    public CharacterSO PlayerCharacter => playerSO; // publiczne do odczytu
+    private CharacterInstance player;
+    private CharacterInstance enemy;
 
     void Start()
     {
-        playerSO = Instantiate(BattleTransferData.playerData);
-        enemySO = Instantiate(BattleTransferData.enemyData);
+        player = BattleTransferData.playerInstance;
+        enemy = BattleTransferData.enemyInstance;
 
-        playerSO.InitializeStats();
-        enemySO.InitializeStats();
-
-        player = playerSO;
-        enemy = enemySO;
-
-        SpawnSprites(playerSO, enemySO);
+        SpawnSprites(player, enemy);
         UpdateUI();
         SetupSkillButtons();
     }
 
-    void SpawnSprites(CharacterSO playerSO, CharacterSO enemySO)
+    void SpawnSprites(CharacterInstance player, CharacterInstance enemy)
     {
         GameObject playerVisual = Instantiate(characterVisualPrefab, playerSpawnPoint.position, Quaternion.identity);
-        playerVisual.GetComponent<SpriteRenderer>().sprite = playerSO.race.BattleSprite;
+        playerVisual.GetComponent<SpriteRenderer>().sprite = player.Race.BattleSprite;
 
         GameObject enemyVisual = Instantiate(characterVisualPrefab, enemySpawnPoint.position, Quaternion.identity);
-        enemyVisual.GetComponent<SpriteRenderer>().sprite = enemySO.race.BattleSprite;
+        enemyVisual.GetComponent<SpriteRenderer>().sprite = enemy.Race.BattleSprite;
     }
 
     void UpdateUI()
@@ -118,7 +103,6 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-
     IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(1f);
@@ -135,11 +119,17 @@ public class BattleManager : MonoBehaviour
 
     void EndBattle(bool playerWon)
     {
-        /*player.SpentMana(player.Stats.GetStatValue(CharacterStats.StatType.MaxMana) - player.Stats.GetStatValue(CharacterStats.StatType.Mana));
-        player.TakeDamage(player.Stats.GetStatValue(CharacterStats.StatType.MaxHP) - player.Stats.GetStatValue(CharacterStats.StatType.Mana));
-*/
         Debug.Log(playerWon ? "Wygra³eœ walkê!" : "Przegra³eœ...");
+
+        if (playerWon)
+        {
+            int baseExp = 5;
+            int floor = 2; // lub DungeonManager.Instance.GetCurrentFloor()
+            int expReward = baseExp + floor * 2;
+
+            player.GainExp(expReward);
+        }
+
         SceneManager.LoadScene(BattleTransferData.previousSceneName);
     }
-
 }

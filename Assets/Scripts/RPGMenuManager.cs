@@ -7,8 +7,7 @@ using System.Collections;
 public class RPGMenuManager : MonoBehaviour
 {
     [SerializeField] private BattleManager battleManager;
-    private CharacterSO playerSO;
-    private ICharacter player;
+    private CharacterInstance player;
 
     [Header("Menu Panels")]
     [SerializeField] private GameObject panelMainMenu;
@@ -35,11 +34,10 @@ public class RPGMenuManager : MonoBehaviour
 
     IEnumerator InitializePlayer()
     {
-        while (battleManager.PlayerCharacter == null)
+        while (BattleTransferData.playerInstance == null)
             yield return null;
 
-        playerSO = battleManager.PlayerCharacter;
-        player = playerSO;
+        player = BattleTransferData.playerInstance;
 
         attackButton.onClick.AddListener(() => OpenSubMenu(SkillCategory.Physical));
         magicButton.onClick.AddListener(() => OpenSubMenu(SkillCategory.Magic));
@@ -73,6 +71,7 @@ public class RPGMenuManager : MonoBehaviour
             }
         }
 
+        // Przycisk Wróć
         GameObject backBtnObj = Instantiate(skillButtonPrefab, subMenuButtonContainer);
         TextMeshProUGUI backTxt = backBtnObj.GetComponentInChildren<TextMeshProUGUI>();
         if (backTxt != null) backTxt.text = "← Wróć";

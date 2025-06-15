@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: FireBall
   manaCost: 10
-  damage: 10
+  damage: 100
+  hpCost: 0
+  lifeSteal: 0
   damagetype: 0
   category: 1

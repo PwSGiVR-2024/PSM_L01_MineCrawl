@@ -85,10 +85,17 @@ public class CharacterStats
 
     public void Add(CharacterStats other)
     {
+        if (other == null)
+        {
+            Debug.LogWarning("CharacterStats.Add: other is null, skipping.");
+            return;
+        }
+
         foreach (StatType stat in Enum.GetValues(typeof(StatType)))
         {
             ChangeStat(stat, other.GetStatValue(stat));
         }
     }
+
 
 }
