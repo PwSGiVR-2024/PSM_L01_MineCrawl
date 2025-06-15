@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System;
+using System.IO;
 
 namespace Assets.Scripts.CreateRoom
 {
@@ -65,6 +66,14 @@ namespace Assets.Scripts.CreateRoom
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             var room = GetRandomRoom();
             player.transform.Translate(room.rootCoords.x, room.rootCoords.y, 0);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                DumpMapToFile();
+            }
         }
 
         protected MapData GenerateArray(int width, int height)
@@ -167,7 +176,7 @@ namespace Assets.Scripts.CreateRoom
             {
                 Vector2Int start = room.rootCoords;
                 //Vector2Int goal = rooms[j].rootCoords;
-                tempMapData = PathFinding.RandomWalk(mapData, new Vector2Int(start.x, start.y), 700, rooms);//500 cigarettes default
+                tempMapData = PathFinding.RandomWalk(mapData, new Vector2Int(start.x, start.y), 500, rooms);//500 cigarettes default
             }
 
             return tempMapData;
@@ -177,6 +186,30 @@ namespace Assets.Scripts.CreateRoom
         {
             return rooms[UnityEngine.Random.Range(0, rooms.Count)];
         }
+
+        private void DumpMapToFile()
+        {
+            string fileName = "MapDump.txt";
+            string path = Path.Combine(Application.dataPath, fileName);
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+                int rows = mapData.width;
+                int cols = mapData.height;
+
+                for (int y = 0; y < rows; y++)
+                {
+                    string line = "";
+                    for (int x = 0; x < cols; x++)
+                    {
+                        line += mapData.mapArray[y][x].ToString().PadLeft(2, ' ') + " ";
+                    }
+                    writer.WriteLine(line.Trim());
+                }
+            }
+
+            Debug.Log("Map data dumped to: " + path);
+        }
+      
     }
 }
 

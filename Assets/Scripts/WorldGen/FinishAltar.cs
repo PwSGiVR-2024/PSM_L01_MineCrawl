@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class FinishAltar : MonoBehaviour
 {
-    private int currentFloor;
     private FloorChanger floorChanger;
     private bool playerInRange;
     private GameObject player;
@@ -10,7 +9,6 @@ public class FinishAltar : MonoBehaviour
     private void Start()
     {
         floorChanger = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorChanger>();
-        currentFloor = 0;
         playerInRange = false;
     }
 
@@ -38,16 +36,11 @@ public class FinishAltar : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                floorChanger.ChangeFloor(currentFloor);
-                currentFloor++;
+                floorChanger.ChangeFloor(1);
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                if (currentFloor > 0)
-                {
-                    floorChanger.ChangeFloor(currentFloor);
-                    currentFloor--;
-                }
+                floorChanger.ChangeFloor(-1);
             }
         }
         
