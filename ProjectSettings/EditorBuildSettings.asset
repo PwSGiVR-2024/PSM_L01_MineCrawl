@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/dev/jag/tileMapTests.unity
+    guid: bbb2b4561dc3af84580c581051ec9ef6
+  - enabled: 1
     path: Assets/Scenes/dev/shiro/Main menu.unity
     guid: fdaec42655d2cbb4ab29963ae1139d9d
   - enabled: 1

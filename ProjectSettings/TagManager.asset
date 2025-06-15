@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Music
+tags:
+  - Music
+  - Treasure
   - Enemy
   - NoImage
   layers:

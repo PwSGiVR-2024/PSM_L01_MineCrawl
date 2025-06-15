@@ -1,145 +1,216 @@
+using Assets.Scripts.WorldGen;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static UnityEngine.Rendering.DebugUI;
+using System;
+using System.IO;
 
-public class CreateRoom : MonoBehaviour
+namespace Assets.Scripts.CreateRoom
 {
-    public TilePalette tilePallete;
-    public TileBase[] tilePalleteStone;//tests
-    public struct MapData
+    public class CreateRoom : MonoBehaviour
     {
-        public int width;
-        public int height;
-        public int[][] mapArray;
-    }
-    public TileBase tile;
-    public TileBase rootTile; //tests
-    public Tilemap map;
-
-    private void Awake()
-    {
-        Debug.Log("AWAKE");
-        tilePallete.tiles = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
-        tilePalleteStone = Resources.LoadAll<TileBase>("Tile Palette/TP Wall");
-    }
-
-    void Start()
-    {
-        MapData mapData = GenerateArray(64, 64);
-        mapData = GenerateRoom(mapData);
-        RenderMap(mapData, map, tile);  
-    }
-
-    public void RenderMap(MapData mapData, Tilemap tilemap, TileBase tile)
-    {
-        tilemap.ClearAllTiles();
-        for (int x = 0; x < mapData.width; x++)
+        public struct MapData
         {
-            for (int y = 0; y < mapData.height; y++)
-            {
-                if (mapData.mapArray[x][y] == -1)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), rootTile);
+            public int width;
+            public int height;
+            public int[][] mapArray;
+        }
 
-                }
-                else if(mapData.mapArray[x][y] == -2)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), tile);
-                }
-                else
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), tilePallete.tiles[mapData.mapArray[x][y]]);
-                }
+        public struct Room
+        {
+            public Vector2Int rootCoords;
+            public int width;
+            public int height;
+
+            public Room(Vector2Int position, int width, int height)
+            {
+                this.rootCoords = position;
+                this.width = width;
+                this.height = height;
             }
         }
-    }
 
-    private MapData GenerateArray(int width, int height)
-    {
-        MapData mapData = new MapData();
-        mapData.width = width;
-        mapData.height = height;
-        mapData.mapArray = new int[width][];
+        //public TilePalette tilePallete;
+        public TileBase[] tilePallete;
+        public TileBase[] tilePalleteStone;//tests
+        public TileBase tile;
+        public TileBase rootTile; //tests
+        public TileBase pathTile; //tests
+        public Tilemap groundMap;
+        public Tilemap wallsMap;
 
-        for(int i = 0; i < width; i++)
+        protected static List<Room> rooms;
+        protected MapData mapData;
+        protected FloorRenderer renderer;
+
+        private void Awake()
         {
-            mapData.mapArray[i] = new int[height];
+            rooms = new List<Room>();
+            //tilePallete.tiles = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
+            tilePallete = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
+            //Array.Resize(ref tilePallete.tiles, 32); //include only clean grass
+            Array.Resize(ref tilePallete, 32); //include only clean grass
+            tilePalleteStone = Resources.LoadAll<TileBase>("Tile Palette/TP Wall");
+
+            mapData = GenerateArray(64, 64);
+            mapData = GenerateFloor(mapData);
+            mapData = GenerateCorridors(mapData);
+
+            renderer = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorRenderer>();
+            renderer.RenderMap(mapData);
         }
 
-        for (int x = 0; x < width; x++)
+        void Start()
         {
-            for (int y = 0; y < height; y++)
+            //test
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            var room = GetRandomRoom();
+            player.transform.Translate(room.rootCoords.x, room.rootCoords.y, 0);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
-                mapData.mapArray[x][y] = Mathf.RoundToInt(Random.Range(0, tilePallete.tiles.Length));
+                DumpMapToFile();
             }
         }
-        return mapData;
-    }
 
-    private static MapData GenerateRoom(MapData mapData)
-    {
-        int numberOfRooms = Mathf.RoundToInt(Random.Range(5, 10));
-
-        mapData = CreateRoomRoot(mapData, numberOfRooms);
-
-        return mapData;
-    }
-
-    private static MapData CreateRoomRoot(MapData mapData, int count, int assignValue = -1)
-    {
-        int width = mapData.width;
-        int height = mapData.height;
-
-        int regionCols = Mathf.CeilToInt(Mathf.Sqrt(count));
-        int regionRows = Mathf.CeilToInt((float)count / regionCols);
-
-        int regionWidth = width / regionCols;
-        int regionHeight = height / regionRows;
-
-        int roomWidth = Mathf.RoundToInt(Random.Range(3, 6));
-        int roomHeight = Mathf.RoundToInt(Random.Range(3, 6));
-
-        System.Random rnd = new System.Random();
-
-        for (int row = 0; row < regionRows; row++)
+        protected MapData GenerateArray(int width, int height)
         {
-            for (int col = 0; col < regionCols; col++)
+            MapData mapData = new MapData();
+            mapData.width = width;
+            mapData.height = height;
+            mapData.mapArray = new int[width][];
+
+            for (int i = 0; i < width; i++)
             {
-                int minX = col * regionWidth;
-                int minY = row * regionHeight;
-                int maxX = Mathf.Min(width, minX + regionWidth);
-                int maxY = Mathf.Min(height, minY + regionHeight);
+                mapData.mapArray[i] = new int[height];
+            }
 
-                if (maxX <= minX || maxY <= minY) continue;
-
-                int x = rnd.Next(minX, maxX);
-                int y = rnd.Next(minY, maxY);
-
-                int widthLimit = roomWidth;
-
-                for (int i = x; i < width - roomWidth; i++)
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
                 {
-                    if (widthLimit <= 0) break;
+                    //mapData.mapArray[x][y] = Mathf.RoundToInt(UnityEngine.Random.Range(0, tilePallete.tiles.Length));
+                    mapData.mapArray[x][y] = Mathf.RoundToInt(UnityEngine.Random.Range(0, tilePallete.Length));
+                }
+            }
+            return mapData;
+        }
 
-                    int heightLimit = roomHeight;
+        protected static MapData GenerateFloor(MapData mapData)
+        {
+            int numberOfRooms = Mathf.RoundToInt(UnityEngine.Random.Range(5, 10));
 
-                    for (int j = y; j < height - roomHeight; j++)
+            mapData = GenerateRoom(mapData, numberOfRooms);
+
+            return mapData;
+        }
+
+        protected static MapData GenerateRoom(MapData mapData, int count, int assignValue = -1)
+        {
+            int padding = 5;
+            int width = mapData.width - padding;
+            int height = mapData.height - padding;
+
+            int regionCols = Mathf.CeilToInt(Mathf.Sqrt(count));
+            int regionRows = Mathf.CeilToInt((float)count / regionCols);
+
+            int regionWidth = width / regionCols;
+            int regionHeight = height / regionRows;
+
+            System.Random rnd = new System.Random();
+
+            for (int row = 0; row < regionRows; row++)
+            {
+                for (int col = 0; col < regionCols; col++)
+                {
+                    int minX = col * regionWidth;
+                    int minY = row * regionHeight;
+                    int maxX = Mathf.Min(width, minX + regionWidth);
+                    int maxY = Mathf.Min(height, minY + regionHeight);
+
+                    if (maxX <= minX || maxY <= minY) continue;
+
+                    int x = rnd.Next(minX, maxX);
+                    int y = rnd.Next(minY, maxY);
+
+                    int roomWidth = Mathf.RoundToInt(UnityEngine.Random.Range(4, 8));
+                    int roomHeight = Mathf.RoundToInt(UnityEngine.Random.Range(4, 8));
+
+                    int widthLimit = roomWidth;
+
+                    mapData.mapArray[x][y] = assignValue; //root
+                    rooms.Add(new Room(new Vector2Int(x, y), roomWidth, roomHeight));
+
+                    for (int i = x; i < width - roomWidth; i++)
                     {
-                        if (heightLimit <= 0) break;
-                       
-                        mapData.mapArray[i][j] = -2;
-                        
-                        heightLimit--;
+                        if (widthLimit <= 0) break;
+
+                        int heightLimit = roomHeight;
+
+                        for (int j = y; j < height - roomHeight; j++)
+                        {
+                            if (heightLimit <= 0) break;
+
+                            mapData.mapArray[i][j] = -2; //room
+
+                            heightLimit--;
+                        }
+
+                        widthLimit--;
                     }
 
-                    widthLimit--;
                 }
-                
-                mapData.mapArray[x][y] = assignValue;
             }
+
+            return mapData;
         }
 
-        return mapData;
+        protected static MapData GenerateCorridors(MapData mapData)
+        {
+            MapData tempMapData = mapData;
+
+            foreach(Room room in rooms)
+            {
+                Vector2Int start = room.rootCoords;
+                //Vector2Int goal = rooms[j].rootCoords;
+                tempMapData = PathFinding.RandomWalk(mapData, new Vector2Int(start.x, start.y), 500, rooms);//500 cigarettes default
+            }
+
+            return tempMapData;
+        }
+
+        public Room GetRandomRoom()
+        {
+            return rooms[UnityEngine.Random.Range(0, rooms.Count)];
+        }
+
+        private void DumpMapToFile()
+        {
+            string fileName = "MapDump.txt";
+            string path = Path.Combine(Application.dataPath, fileName);
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+                int rows = mapData.width;
+                int cols = mapData.height;
+
+                for (int y = 0; y < rows; y++)
+                {
+                    string line = "";
+                    for (int x = 0; x < cols; x++)
+                    {
+                        line += mapData.mapArray[y][x].ToString().PadLeft(2, ' ') + " ";
+                    }
+                    writer.WriteLine(line.Trim());
+                }
+            }
+
+            Debug.Log("Map data dumped to: " + path);
+        }
+      
     }
 }
+
+

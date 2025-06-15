@@ -5,13 +5,13 @@ public class PlayerStats : MonoBehaviour
 {
     public enum StatType //enum do trzymania statystyk, ³¹twiej bêdzie iterowaæ
     {
-        Si³a,
+        Sila,
         Percepcja,
-        Wytrzyma³oœæ,
+        Wytrzymalosc,
         Charyzma,
         Inteligencja,
-        Zrêcznoœæ,
-        Szczêœcie
+        Zrecznosc,
+        Szczescie
     }
 
     public enum SkillType
@@ -38,17 +38,17 @@ public class PlayerStats : MonoBehaviour
     void Start()
     {
         // Inicjalizacja statystyk, taka próbna
-        maxHealth = 10 * GetStat(StatType.Wytrzyma³oœæ);
+        maxHealth = 10 * GetStat(StatType.Wytrzymalosc);
         currentHealth = maxHealth;
         maxMana = 10 * GetStat(StatType.Inteligencja);
         currentMana = maxMana;
-        stats[StatType.Si³a] = 5;
+        stats[StatType.Sila] = 5;
         stats[StatType.Percepcja] = 5;
-        stats[StatType.Wytrzyma³oœæ] = 5;
+        stats[StatType.Wytrzymalosc] = 5;
         stats[StatType.Charyzma] = 5;
         stats[StatType.Inteligencja] = 5;
-        stats[StatType.Zrêcznoœæ] = 5;
-        stats[StatType.Szczêœcie] = 5;
+        stats[StatType.Zrecznosc] = 5;
+        stats[StatType.Szczescie] = 5;
 
 
         //inizjalizacja skilli, te¿ próbna
