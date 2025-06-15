@@ -2,37 +2,13 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using static PlayerStats;
 using System.Collections;
 
 public class RPGMenuManager : MonoBehaviour
 {
-    IEnumerator InitializePlayer()
-    {
-        while (battleManager.PlayerCharacter == null)
-            yield return null;
-
-        playerSO = battleManager.PlayerCharacter;
-        player = playerSO;
-
-        if (player == null)
-        {
-            Debug.LogError("Player ICharacter is STILL null in RPGMenuManager!");
-            yield break;
-        }
-
-        attackButton.onClick.AddListener(() => OpenSubMenu("Attack"));
-        magicButton.onClick.AddListener(() => OpenSubMenu("Magic"));
-        itemButton.onClick.AddListener(() => OpenSubMenu("Items"));
-    }
-
-    [Header("Reference to BattleManager")]
     [SerializeField] private BattleManager battleManager;
-
     private CharacterSO playerSO;
     private ICharacter player;
-
-    public CharacterSO PlayerCharacter => playerSO;
 
     [Header("Menu Panels")]
     [SerializeField] private GameObject panelMainMenu;
@@ -43,52 +19,36 @@ public class RPGMenuManager : MonoBehaviour
     [SerializeField] private Button attackButton;
     [SerializeField] private Button magicButton;
     [SerializeField] private Button itemButton;
-    [SerializeField] private Button runButton;
 
     [Header("Submenu")]
     [SerializeField] private GameObject skillButtonPrefab;
 
-    private List<string> currentOptions = new();
-
-    void Start()
+    private void Start()
     {
         if (battleManager == null)
         {
-            Debug.LogError("BattleManager reference not set in RPGMenuManager!");
+            Debug.LogError("BattleManager reference not set!");
             return;
         }
-
         StartCoroutine(InitializePlayer());
     }
 
-    public void OpenSubMenu(string category)
+    IEnumerator InitializePlayer()
     {
-        if (player == null)
-        {
-            Debug.LogError("Player is null in OpenSubMenu");
-            return;
-        }
+        while (battleManager.PlayerCharacter == null)
+            yield return null;
 
-        SkillCategory skillCategory;
+        playerSO = battleManager.PlayerCharacter;
+        player = playerSO;
 
-        switch (category)
-        {
-            case "Attack":
-                skillCategory = SkillCategory.Physical;
-                break;
-            case "Magic":
-                skillCategory = SkillCategory.Magic;
-                break;
-            case "Items":
-                skillCategory = SkillCategory.Item;
-                break;
-            default:
-                return;
-        }
+        attackButton.onClick.AddListener(() => OpenSubMenu(SkillCategory.Physical));
+        magicButton.onClick.AddListener(() => OpenSubMenu(SkillCategory.Magic));
+        itemButton.onClick.AddListener(() => OpenSubMenu(SkillCategory.Item));
+    }
 
-        List<SkillsSO> skills = GetAllCharacterSkills(player);
-        List<SkillsSO> filteredSkills = skills.FindAll(s => s.Category == skillCategory);
-
+    void OpenSubMenu(SkillCategory category)
+    {
+        List<SkillsSO> filteredSkills = GetAllCharacterSkills(player).FindAll(s => s.Category == category);
         UpdateSubMenu(filteredSkills);
         panelMainMenu.SetActive(false);
         panelSubMenu.SetActive(true);
@@ -108,8 +68,8 @@ public class RPGMenuManager : MonoBehaviour
             Button btn = btnObj.GetComponent<Button>();
             if (btn != null)
             {
-                SkillsSO capturedSkill = skill;
-                btn.onClick.AddListener(() => UseSkill(capturedSkill));
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => UseSkill(skill));
             }
         }
 
@@ -118,15 +78,18 @@ public class RPGMenuManager : MonoBehaviour
         if (backTxt != null) backTxt.text = "← Wróć";
 
         Button backBtn = backBtnObj.GetComponent<Button>();
-        if (backBtn != null) backBtn.onClick.AddListener(BackToMain);
+        if (backBtn != null)
+        {
+            backBtn.onClick.RemoveAllListeners();
+            backBtn.onClick.AddListener(BackToMain);
+        }
     }
 
     void UseSkill(SkillsSO skill)
     {
         battleManager.PlayerAttack(skill);
-        BackToMain(); // po ataku wróć do menu głównego
+        BackToMain();
     }
-
 
     void BackToMain()
     {
@@ -137,13 +100,8 @@ public class RPGMenuManager : MonoBehaviour
     public List<SkillsSO> GetAllCharacterSkills(ICharacter character)
     {
         List<SkillsSO> allSkills = new();
-
-        if (character.Class != null)
-            allSkills.AddRange(character.Class.startingSkills);
-
-        if (character.Race != null)
-            allSkills.AddRange(character.Race.startingSkills);
-
+        if (character.Class != null) allSkills.AddRange(character.Class.startingSkills);
+        if (character.Race != null) allSkills.AddRange(character.Race.startingSkills);
         return allSkills;
     }
 }

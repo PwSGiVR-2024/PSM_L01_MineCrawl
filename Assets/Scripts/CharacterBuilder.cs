@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine;
 
 [CreateAssetMenu(fileName = "CharacterCreationData", menuName = "Game/CharacterCreationData")]
 public class CharacterCreationData : ScriptableObject
@@ -32,15 +31,51 @@ public class CharacterBuilder : MonoBehaviour
     public CharacterHolder characterHolderPrefab;
     public Transform spawnPoint;
     public Image characterPreviewImage;
+    [SerializeField] bool Random = false;
     void Start()
+    {
+        
+            (availableRaces, availableClasses) = CheckAvailable();
+        if (!Random)
+        {
+            SetupChoices();
+
+            raceDropdown.onValueChanged.AddListener(delegate { UpdateCharacterPreview(); });
+        }
+    }
+
+    public (CharacterRaceSO[], CharacterClassSO[]) CheckAvailable()
     {
         availableRaces = Resources.LoadAll<CharacterRaceSO>("races");
         availableClasses = Resources.LoadAll<CharacterClassSO>("classes");
-        SetupChoices();
-
-        raceDropdown.onValueChanged.AddListener(delegate { UpdateCharacterPreview(); });
+        return (availableRaces, availableClasses);
     }
+    public void RandomCharacter(CharacterRaceSO[] availableRaces, CharacterClassSO[] availableClasses)
+    {
+        if (availableRaces == null || availableRaces.Length == 0)
+        {
+            Debug.LogError("Brak dostępnych ras!");
+            return;
+        }
 
+        if (availableClasses == null || availableClasses.Length == 0)
+        {
+            Debug.LogError("Brak dostępnych klas!");
+            return;
+        }
+
+        System.Random rand = new System.Random();
+        CharacterClassSO klasa = availableClasses[rand.Next(availableClasses.Length)];
+        CharacterRaceSO rasa = availableRaces[rand.Next(availableRaces.Length)];
+
+        Debug.Log("klasa: " + klasa.name + ", rasa: " + rasa.name);
+
+        characterDataTemplate.selectedRace = rasa;
+        characterDataTemplate.selectedClass = klasa;
+        characterDataTemplate.name = "Andrzej";
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(2);
+    }
 
     public void CreateCharacter()
     {
@@ -58,7 +93,7 @@ public class CharacterBuilder : MonoBehaviour
         characterDataTemplate.selectedRace = selectedRace;
         characterDataTemplate.selectedClass = selectedClass;
 
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1); // przejdź do gry
+        UnityEngine.SceneManagement.SceneManager.LoadScene(2); // przejdź do gry
     }
 
     public void SetupChoices()

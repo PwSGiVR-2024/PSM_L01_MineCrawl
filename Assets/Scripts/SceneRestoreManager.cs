@@ -29,7 +29,7 @@ public class SceneRestoreManager : MonoBehaviour
                 sr.sprite = characterDataTemplate.selectedRace.battleSprite;
             }
 
-            characterDataTemplate.Clear(); // opcjonalne czyszczenie
+            //characterDataTemplate.Clear(); // opcjonalne czyszczenie
         }
         if (BattleTransferData.cameFromBattle)
         {

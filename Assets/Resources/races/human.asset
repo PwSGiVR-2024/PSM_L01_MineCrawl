@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b65b8847dc98e24429cbb944fa1038ed, type: 3}
-  m_Name: Race_human
+  m_Name: human
   m_EditorClassIdentifier: 
   battleSprite: {fileID: 21300000, guid: 14a01b2db26707f4ba977dea06cff0f7, type: 3}
   raceName: human
