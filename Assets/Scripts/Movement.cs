@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
@@ -10,9 +11,17 @@ public class Movement : MonoBehaviour
     [SerializeField] private AudioClip footstepSound;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    [SerializeField] private CharacterRaceSO[] availableEnemyRaces;
+    [SerializeField] private CharacterClassSO[] availableEnemyClasses;
+
     private AudioSource audioSource;
     private Vector3 targetPosition;
     private bool isMoving = false;
+    private Vector2Int lastDirection;
+    private float holdDelay = 0.15f;
+    private float holdTimer = 0f;
+
+    private float encounterChance = 0.03f;
 
     private void Start()
     {
@@ -21,9 +30,14 @@ public class Movement : MonoBehaviour
             PlayerCamera = Camera.main;
 
         audioSource = GetComponent<AudioSource>();
-
         if (spriteRenderer == null)
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (availableEnemyRaces == null || availableEnemyRaces.Length == 0)
+            availableEnemyRaces = Resources.LoadAll<CharacterRaceSO>("races");
+
+        if (availableEnemyClasses == null || availableEnemyClasses.Length == 0)
+            availableEnemyClasses = Resources.LoadAll<CharacterClassSO>("classes");
     }
 
     private void Update()
@@ -31,10 +45,31 @@ public class Movement : MonoBehaviour
         if (isMoving)
         {
             MoveToTarget();
+            return;
+        }
+
+        Vector2Int inputDir = Vector2Int.zero;
+        if (Input.GetKey(KeyCode.W)) inputDir.y = 1;
+        else if (Input.GetKey(KeyCode.S)) inputDir.y = -1;
+        else if (Input.GetKey(KeyCode.A)) inputDir.x = -1;
+        else if (Input.GetKey(KeyCode.D)) inputDir.x = 1;
+
+        if (inputDir != Vector2Int.zero)
+        {
+            if (holdTimer <= 0f || inputDir != lastDirection)
+            {
+                TryMove(inputDir);
+                lastDirection = inputDir;
+                holdTimer = holdDelay;
+            }
+            else
+            {
+                holdTimer -= Time.deltaTime;
+            }
         }
         else
         {
-            HandleInput();
+            holdTimer = 0f;
         }
     }
 
@@ -44,37 +79,26 @@ public class Movement : MonoBehaviour
         PlayerCamera.transform.position = Vector3.Lerp(PlayerCamera.transform.position, cameraTarget, 10f * Time.deltaTime);
     }
 
-    private void HandleInput()
+    private void TryMove(Vector2Int dir)
     {
-        int x = 0, y = 0;
+        Vector3Int currentPos = grid.WorldToCell(transform.position);
+        Vector3Int moveDir = new Vector3Int(dir.x, dir.y, 0);
+        Vector3Int newPos = currentPos + moveDir;
 
-        // Pojedyncze naciœniêcie = jeden ruch
-        if (Input.GetKeyDown(KeyCode.W)) y += 1;
-        if (Input.GetKeyDown(KeyCode.S)) y -= 1;
-        if (Input.GetKeyDown(KeyCode.A)) x -= 1;
-        if (Input.GetKeyDown(KeyCode.D)) x += 1;
+        if (spriteRenderer != null && dir.x != 0)
+            spriteRenderer.flipX = (dir.x < 0);
 
-        if (x != 0 || y != 0)
+        if (IsEnemyAtPosition(newPos, out GameObject enemy))
         {
-            Vector3Int currentPos = grid.WorldToCell(transform.position);
-            Vector3Int moveDir = new Vector3Int(x, y, 0);
-            Vector3Int newPos = currentPos + moveDir;
+            Debug.Log("Spotkano przeciwnika: " + enemy.name);
+            enemy.GetComponent<Enemy>().Battle();
+            return;
+        }
 
-            // Obracanie sprite w lewo/prawo
-            if (spriteRenderer != null && x != 0)
-                spriteRenderer.flipX = (x < 0);
-
-            if (IsEnemyAtPosition(newPos, out GameObject enemy))
-            {
-                Debug.Log("Spotkano przeciwnika: " + enemy.name);
-                enemy.GetComponent<Enemy>().Battle();
-                return;
-            }
-
-            if (IsWalkable(newPos))
-            {
-                MoveTo(newPos);
-            }
+        if (IsWalkable(newPos))
+        {
+            MoveTo(newPos);
+            TryTriggerRandomEncounter();  // <-- Tu jest wywo³anie funkcji
         }
     }
 
@@ -86,14 +110,13 @@ public class Movement : MonoBehaviour
         if (footstepSound != null)
         {
             audioSource.Stop();
-            audioSource.PlayOneShot(footstepSound, 0.5f); // dŸwiêk 1s
+            audioSource.PlayOneShot(footstepSound, 0.5f);
         }
     }
 
     private void MoveToTarget()
     {
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-
         if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
         {
             transform.position = targetPosition;
@@ -123,5 +146,42 @@ public class Movement : MonoBehaviour
 
         enemy = null;
         return false;
+    }
+
+
+    private void TryTriggerRandomEncounter()
+    {
+        if (Random.value < encounterChance && availableEnemyRaces.Length > 0 && availableEnemyClasses.Length > 0)
+        {
+            CharacterRaceSO race = availableEnemyRaces[Random.Range(0, availableEnemyRaces.Length)];
+            CharacterClassSO cls = availableEnemyClasses[Random.Range(0, availableEnemyClasses.Length)];
+
+            CharacterSO enemyTemplate = ScriptableObject.CreateInstance<CharacterSO>();
+            enemyTemplate.characterName = $"{race.raceName} {cls.className}";
+            enemyTemplate.race = race;
+            enemyTemplate.characterClass = cls;
+            enemyTemplate.baseLevel = 1;
+            enemyTemplate.baseStats = new CharacterStats();
+
+            CharacterInstance enemyInstance = new CharacterInstance(enemyTemplate);
+
+            BattleTransferData.enemyInstance = enemyInstance;
+
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                CharacterHolder playerHolder = player.GetComponent<CharacterHolder>();
+                if (playerHolder != null)
+                {
+                    BattleTransferData.playerInstance = playerHolder.characterInstance;
+                }
+            }
+
+            BattleTransferData.previousSceneName = SceneManager.GetActiveScene().name;
+            BattleTransferData.playerPosition = transform.position;
+            BattleTransferData.cameFromBattle = true;
+
+            SceneManager.LoadScene("BattleScene");
+        }
     }
 }

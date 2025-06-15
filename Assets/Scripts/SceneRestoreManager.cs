@@ -1,88 +1,67 @@
-using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class SceneRestoreManager : MonoBehaviour
 {
-    public CharacterCreationData characterDataTemplate; // Powinno zawieraæ selectedRace, selectedClass, playerName itd.
+    public CharacterCreationData characterDataTemplate;
     public CharacterHolder characterPrefab;
     public Transform spawnPoint;
     [SerializeField] private Grid walk;
     [SerializeField] private Tilemap walkable;
-    void PrintAllStats(CharacterInstance player)
-    {
-        foreach (CharacterStats.StatType stat in Enum.GetValues(typeof(CharacterStats.StatType)))
-        {
-            int value = player.Stats.GetStatValue(stat);
-            Debug.Log($"{stat}: {value}");
-        }
-    }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            PrintAllStats(BattleTransferData.playerInstance);
-        }
-    }
+
     void Start()
     {
-        if (BattleTransferData.playerInstance == null && characterDataTemplate.selectedRace != null && characterDataTemplate.selectedClass != null)
+        CharacterHolder character = null;
+
+        if (BattleTransferData.playerInstance == null &&
+            characterDataTemplate.selectedRace != null &&
+            characterDataTemplate.selectedClass != null)
         {
-            // Tworzenie nowej postaci jak dot¹d
-            CharacterSO newCharacterSO = ScriptableObject.CreateInstance<CharacterSO>();
-            newCharacterSO.race = characterDataTemplate.selectedRace;
-            newCharacterSO.characterClass = characterDataTemplate.selectedClass;
-            newCharacterSO.characterName = characterDataTemplate.name;
+            var so = ScriptableObject.CreateInstance<CharacterSO>();
+            so.race = characterDataTemplate.selectedRace;
+            so.characterClass = characterDataTemplate.selectedClass;
+            so.characterName = characterDataTemplate.name;
 
-            CharacterInstance newCharacterInstance = new CharacterInstance(newCharacterSO);
+            CharacterInstance instance = new CharacterInstance(so);
+            character = Instantiate(characterPrefab, spawnPoint.position, Quaternion.identity);
+            character.characterInstance = instance;
 
-            CharacterHolder character = Instantiate(characterPrefab, spawnPoint.position, Quaternion.identity);
-            character.characterInstance = newCharacterInstance;
-
-            SetupMovementAndSprite(character);
-
-            BattleTransferData.playerInstance = newCharacterInstance;
+            BattleTransferData.playerInstance = instance;
         }
         else if (BattleTransferData.playerInstance != null)
         {
-            // Jeœli mamy ju¿ playerInstance (po powrocie z walki), tworzymy prefab i ustawiamy dane
-            CharacterHolder character = Instantiate(characterPrefab, spawnPoint.position, Quaternion.identity);
+            character = Instantiate(characterPrefab, spawnPoint.position, Quaternion.identity);
             character.characterInstance = BattleTransferData.playerInstance;
-
-            SetupMovementAndSprite(character);
         }
 
-        // Logika przy powrocie z walki (przemieszczenie, usuniêcie wrogów)
-        if (BattleTransferData.cameFromBattle)
+        if (character != null)
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-                player.transform.position = BattleTransferData.playerPosition;
+            SetupMovementAndSprite(character);
 
-            if (!string.IsNullOrEmpty(BattleTransferData.defeatedEnemyID))
+            if (BattleTransferData.cameFromBattle)
             {
-                GameObject defeatedEnemy = GameObject.Find(BattleTransferData.defeatedEnemyID);
-                if (defeatedEnemy != null)
-                    Destroy(defeatedEnemy);
+                character.transform.position = BattleTransferData.playerPosition;
 
-                BattleTransferData.defeatedEnemyID = null;
+                if (!string.IsNullOrEmpty(BattleTransferData.defeatedEnemyID))
+                {
+                    GameObject defeated = GameObject.Find(BattleTransferData.defeatedEnemyID);
+                    if (defeated != null) Destroy(defeated);
+                    BattleTransferData.defeatedEnemyID = null;
+                }
+
+                BattleTransferData.cameFromBattle = false;
             }
-
-            BattleTransferData.cameFromBattle = false;
         }
     }
 
     private void SetupMovementAndSprite(CharacterHolder character)
     {
-        Movement script = character.GetComponent<Movement>();
-        script.grid = walk;
-        script.walkableTilemap = walkable;
+        var move = character.GetComponent<Movement>();
+        move.grid = walk;
+        move.walkableTilemap = walkable;
 
-        SpriteRenderer sr = character.GetComponent<SpriteRenderer>();
+        var sr = character.GetComponent<SpriteRenderer>();
         if (sr != null)
-        {
             sr.sprite = character.characterInstance.Race.battleSprite;
-        }
     }
-
 }

@@ -4,45 +4,39 @@ using UnityEngine.SceneManagement;
 public class Enemy : MonoBehaviour
 {
     public string enemyID;
+    public CharacterInstance characterInstance;
 
-    private void Awake()
+    public void Initialize(CharacterInstance instance)
     {
+        characterInstance = instance;
         if (string.IsNullOrEmpty(enemyID))
-            enemyID = gameObject.name;
+            enemyID = characterInstance.Name;
 
-        CharacterHolder holder = GetComponent<CharacterHolder>();
-        if (holder != null && holder.characterInstance != null)
-        {
-            int floor = 5; // Zak³adamy sta³¹ wartoœæ albo pobran¹ np. z DungeonManager.Instance.GetCurrentFloor()
+        ScaleStatsByFloor(5); // Przyk³ad skalowania statystyk
 
-            var stats = holder.characterInstance.Stats;
-            stats.ChangeStat(CharacterStats.StatType.MaxHP, floor * 5);
-            stats.ChangeStat(CharacterStats.StatType.CurrentHP, floor * 5);
-            stats.ChangeStat(CharacterStats.StatType.Attack, floor * 2);
-            stats.ChangeStat(CharacterStats.StatType.Defense, floor);
+        // Mo¿esz tutaj ustawiæ np. UI lub inne rzeczy powi¹zane z przeciwnikiem
+    }
 
-            Debug.Log($"[Enemy] {name} skalowany do piêtra {floor}. HP: {stats.GetStatValue(CharacterStats.StatType.MaxHP)}");
-        }
-        else
-        {
-            Debug.LogWarning("Brak CharacterHolder lub characterInstance – nie mo¿na skalowaæ wroga.");
-        }
+    private void ScaleStatsByFloor(int floor)
+    {
+        var stats = characterInstance.Stats;
+        stats.ChangeStat(CharacterStats.StatType.MaxHP, floor * 5);
+        stats.ChangeStat(CharacterStats.StatType.CurrentHP, floor * 5);
+        stats.ChangeStat(CharacterStats.StatType.Attack, floor * 2);
+        stats.ChangeStat(CharacterStats.StatType.Defense, floor);
     }
 
     public void Battle()
     {
-        CharacterHolder enemyHolder = GetComponent<CharacterHolder>();
-        if (enemyHolder == null || enemyHolder.characterInstance == null)
+        if (characterInstance == null)
         {
-            Debug.LogError("Brakuje komponentu CharacterHolder lub instancji postaci u przeciwnika!");
+            Debug.LogError("Brakuje instancji postaci wroga!");
             return;
         }
 
-        // Przekazanie instancji przeciwnika do statycznego obiektu
-        BattleTransferData.enemyInstance = enemyHolder.characterInstance;
+        BattleTransferData.enemyInstance = characterInstance;
         BattleTransferData.defeatedEnemyID = enemyID;
 
-        // Gracz
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
         {

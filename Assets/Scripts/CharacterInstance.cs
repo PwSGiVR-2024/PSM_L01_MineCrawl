@@ -44,7 +44,7 @@ public class CharacterInstance : ICharacter
         stats.ChangeStat(CharacterStats.StatType.Mana, intelligence * Race.manaPerIntelligence);
     }
 
-    public void TakeDamage(int amount)
+public void TakeDamage(int amount)
     {
         stats.ChangeStat(CharacterStats.StatType.CurrentHP, -amount);
         Debug.Log($"{Name} otrzyma³ {amount} obra¿eñ. Aktualne HP: {stats.GetStatValue(CharacterStats.StatType.CurrentHP)}");

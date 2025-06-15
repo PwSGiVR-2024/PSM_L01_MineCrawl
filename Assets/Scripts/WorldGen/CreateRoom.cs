@@ -172,7 +172,7 @@ namespace Assets.Scripts.CreateRoom
         {
             MapData tempMapData = mapData;
 
-            foreach(Room room in rooms)
+            foreach (Room room in rooms)
             {
                 Vector2Int start = room.rootCoords;
                 //Vector2Int goal = rooms[j].rootCoords;
@@ -209,8 +209,7 @@ namespace Assets.Scripts.CreateRoom
 
             Debug.Log("Map data dumped to: " + path);
         }
-      
+
     }
 }
-
 
