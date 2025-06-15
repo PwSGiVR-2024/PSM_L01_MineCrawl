@@ -3,26 +3,30 @@ using UnityEngine.Tilemaps;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] float moveSpeed = 5f;
-    public Tilemap walkableTilemap;
-    public Grid grid;
-    [SerializeField] Camera PlayerCamera ;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] public Tilemap walkableTilemap;
+    [SerializeField] public Grid grid;
+    [SerializeField] private Camera PlayerCamera;
     [SerializeField] private AudioClip footstepSound;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
     private AudioSource audioSource;
-
-
-
     private Vector3 targetPosition;
     private bool isMoving = false;
 
-    void Start()
+    private void Start()
     {
         targetPosition = transform.position;
-        PlayerCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        if (PlayerCamera == null)
+            PlayerCamera = Camera.main;
+
         audioSource = GetComponent<AudioSource>();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
-    void Update()
+    private void Update()
     {
         if (isMoving)
         {
@@ -33,98 +37,79 @@ public class Movement : MonoBehaviour
             HandleInput();
         }
     }
-    void LateUpdate()
+
+    private void LateUpdate()
     {
-        Vector3 cameraTargetPosition = new Vector3(transform.position.x, transform.position.y, PlayerCamera.transform.position.z);
-        PlayerCamera.transform.position = Vector3.Lerp(PlayerCamera.transform.position, cameraTargetPosition, 10f * Time.deltaTime);
+        Vector3 cameraTarget = new Vector3(transform.position.x, transform.position.y, PlayerCamera.transform.position.z);
+        PlayerCamera.transform.position = Vector3.Lerp(PlayerCamera.transform.position, cameraTarget, 10f * Time.deltaTime);
     }
 
-    void HandleInput()
+    private void HandleInput()
     {
-        Vector3 direction = Vector3.zero;
+        int x = 0, y = 0;
 
-        if (Input.GetKey(KeyCode.W)) direction += Vector3.up;
-        if (Input.GetKey(KeyCode.S)) direction += Vector3.down;
-        if (Input.GetKey(KeyCode.A)) direction += Vector3.left;
-        if (Input.GetKey(KeyCode.D)) direction += Vector3.right;
+        // Pojedyncze naciœniêcie = jeden ruch
+        if (Input.GetKeyDown(KeyCode.W)) y += 1;
+        if (Input.GetKeyDown(KeyCode.S)) y -= 1;
+        if (Input.GetKeyDown(KeyCode.A)) x -= 1;
+        if (Input.GetKeyDown(KeyCode.D)) x += 1;
 
-        if (direction != Vector3.zero)
+        if (x != 0 || y != 0)
         {
-            direction = direction.normalized;
+            Vector3Int currentPos = grid.WorldToCell(transform.position);
+            Vector3Int moveDir = new Vector3Int(x, y, 0);
+            Vector3Int newPos = currentPos + moveDir;
 
-            Vector3Int currentGridPos = grid.WorldToCell(transform.position);
-            Vector3Int moveDirInt = Vector3Int.RoundToInt(direction);
-            Vector3Int newPosition = currentGridPos + moveDirInt;
-            GameObject enemy;
-            if (IsEnemyAtPosition(newPosition, out enemy))
+            // Obracanie sprite w lewo/prawo
+            if (spriteRenderer != null && x != 0)
+                spriteRenderer.flipX = (x < 0);
+
+            if (IsEnemyAtPosition(newPos, out GameObject enemy))
             {
                 Debug.Log("Spotkano przeciwnika: " + enemy.name);
-                // tutaj mo¿esz np. za³adowaæ scenê walki:
-                // SceneManager.LoadScene("BattleScene");
-                // lub wywo³aæ jak¹œ metodê:
                 enemy.GetComponent<Enemy>().Battle();
                 return;
             }
 
-            //Próbujemy ukoœnie
-            if (IsWalkable(newPosition))
+            if (IsWalkable(newPos))
             {
-                MoveTo(newPosition);
-            }
-            else
-            {
-                //Spróbuj oœ X
-                Vector3Int xMove = new Vector3Int(moveDirInt.x, 0, 0);
-                Vector3Int xTarget = currentGridPos + xMove;
-
-                if (moveDirInt.x != 0 && IsWalkable(xTarget))
-                {
-                    MoveTo(xTarget);
-                }
-                //Spróbuj oœ Y
-                else
-                {
-                    Vector3Int yMove = new Vector3Int(0, moveDirInt.y, 0);
-                    Vector3Int yTarget = currentGridPos + yMove;
-
-                    if (moveDirInt.y != 0 && IsWalkable(yTarget))
-                    {
-                        MoveTo(yTarget);
-                    }
-                }
+                MoveTo(newPos);
             }
         }
     }
-    void MoveTo(Vector3Int gridPos)
+
+    private void MoveTo(Vector3Int gridPos)
     {
         targetPosition = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0);
         isMoving = true;
 
         if (footstepSound != null)
-            audioSource.PlayOneShot(footstepSound);
+        {
+            audioSource.Stop();
+            audioSource.PlayOneShot(footstepSound, 0.5f); // dŸwiêk 1s
+        }
     }
 
-
-    void MoveToTarget()
+    private void MoveToTarget()
     {
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
         {
             transform.position = targetPosition;
-           
             isMoving = false;
         }
     }
 
-    bool IsWalkable(Vector3Int position)
+    private bool IsWalkable(Vector3Int position)
     {
         TileBase tile = walkableTilemap.GetTile(position);
-        return tile != null; 
+        return tile != null;
     }
-    bool IsEnemyAtPosition(Vector3Int gridPos, out GameObject enemy)
+
+    private bool IsEnemyAtPosition(Vector3Int gridPos, out GameObject enemy)
     {
-        Vector3 worldPos = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0); // œrodek kafelka
+        Vector3 worldPos = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0);
         Collider2D[] hits = Physics2D.OverlapCircleAll(worldPos, 0.1f);
 
         foreach (var hit in hits)
@@ -139,5 +124,4 @@ public class Movement : MonoBehaviour
         enemy = null;
         return false;
     }
-
 }

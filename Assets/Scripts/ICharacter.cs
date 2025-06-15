@@ -11,5 +11,5 @@ public interface ICharacter
     void TakeDamage(int amount);
     void SpentMana(int amount);
     void UseSkill(ISkill skill, ICharacter target);
-    void GainExperience(int amount);
+    void GainExp(int amount);
 }

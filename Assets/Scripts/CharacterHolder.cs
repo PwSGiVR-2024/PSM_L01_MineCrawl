@@ -2,9 +2,15 @@ using UnityEngine;
 
 public class CharacterHolder : MonoBehaviour
 {
-    public CharacterSO characterData; 
+    public CharacterSO characterData;
+    public CharacterInstance characterInstance;
+
     public void Start()
     {
-        characterData.InitializeStats();
+        if (characterInstance == null && characterData != null)
+        {
+            characterInstance = new CharacterInstance(characterData);
+        }
     }
+
 }
