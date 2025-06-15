@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -23,9 +22,20 @@ public class SettingsMenu : MonoBehaviour
     {
         if (backButton != null)
             backButton.onClick.AddListener(ReturnToMainMenu);
-        musicClass = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicClass>();
+
+        musicClass = MusicClass.Instance;
+        if (musicClass == null)
+        {
+            Debug.LogWarning("MusicClass instance is null!");
+        }
+
         musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
         musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+
+        // Ustaw g³oœnoœæ muzyki od razu na starcie, jeœli singleton istnieje
+        if (musicClass != null)
+            musicClass.SetVolume(musicVolumeSlider.value);
+
         // Rozdzielczoœci ekranu
         availableResolutions = Screen.resolutions;
         List<string> options = new List<string>();
@@ -59,10 +69,22 @@ public class SettingsMenu : MonoBehaviour
         // Zastosuj ustawienia na start
         ApplySettings();
     }
+
     private void OnMusicVolumeChanged(float value)
     {
-        musicClass.SetVolume(value);
+        Debug.Log($"Zmiana g³oœnoœci: {value}");
+        if (musicClass != null)
+        {
+            musicClass.SetVolume(value);
+            Debug.Log($"Ustawiono g³oœnoœæ w MusicClass na: {value}");
+        }
+        else
+        {
+            Debug.LogWarning("MusicClass jest null!");
+        }
     }
+
+
     private void OnResolutionChanged(int index)
     {
         PlayerPrefs.SetInt(ResolutionIndexKey, index);
@@ -92,6 +114,7 @@ public class SettingsMenu : MonoBehaviour
         ApplyResolution(resIndex);
         Screen.fullScreen = isFullscreen;
     }
+
     public void OpenSettings()
     {
         settingsPanel.SetActive(true);
