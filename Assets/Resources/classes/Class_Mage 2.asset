@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 146e06d330df01745b173eea49dd9467, type: 3}
-  m_Name: Class_Mage
+  m_Name: Class_Mage 2
   m_EditorClassIdentifier: 
-  className: Fire Mage
+  className: Earth Mage
   baseStats:
     MaxHP: 0
     CurrentHP: 0
@@ -28,4 +28,4 @@ MonoBehaviour:
     Mana: 0
     MaxMana: 0
   startingSkills:
-  - {fileID: 11400000, guid: 1ff3822602fa56840b177354e8f55a90, type: 2}
+  - {fileID: 11400000, guid: 2f838e3522d5a13418c8f1e990e40683, type: 2}

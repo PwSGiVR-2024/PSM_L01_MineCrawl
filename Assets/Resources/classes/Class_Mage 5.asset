@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 146e06d330df01745b173eea49dd9467, type: 3}
-  m_Name: Class_Mage
+  m_Name: Class_Mage 5
   m_EditorClassIdentifier: 
-  className: Fire Mage
+  className: Mage
   baseStats:
     MaxHP: 0
     CurrentHP: 0

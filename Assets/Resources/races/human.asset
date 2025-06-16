@@ -30,5 +30,8 @@ MonoBehaviour:
     MaxMana: 0
   startingSkills:
   - {fileID: 11400000, guid: c9257f71f0b4c424dbc66e0fadb3bd0b, type: 2}
+  - {fileID: 11400000, guid: 535606c8b04089e429eea81af5f3ad24, type: 2}
+  - {fileID: 11400000, guid: bef63c957ee9e2c48a55507c3ce7a11c, type: 2}
+  - {fileID: 11400000, guid: 76220f0ed3e532d408746ebdfb7dd75e, type: 2}
   hpPerEndurance: 10
   manaPerIntelligence: 5

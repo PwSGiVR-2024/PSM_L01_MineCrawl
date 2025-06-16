@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 797049d1ce65e4a4cb67017143602fdd, type: 3}
+  m_Name: ObiadekMamusi
+  m_EditorClassIdentifier: 
+  skillName: Obiadek Mamusi
+  manaCost: 0
+  damage: 0
+  hpCost: -50
+  lifeSteal: 0
+  damagetype: 4
+  category: 2

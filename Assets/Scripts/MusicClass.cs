@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MusicClass : MonoBehaviour
 {
@@ -43,8 +44,8 @@ public class MusicClass : MonoBehaviour
 
         float startVol = _audioSource.volume;
         float targetVol = newMuteState ? 0f : PlayerPrefs.GetFloat(VolumeKey, 0.5f);
-
         OnVolumeMuteChanged?.Invoke(targetVol, newMuteState);
+
 
         fadeCoroutine = StartCoroutine(FadeVolume(startVol, targetVol, 1f, () =>
         {
@@ -75,7 +76,11 @@ public class MusicClass : MonoBehaviour
         OnVolumeMuteChanged?.Invoke(volume, _audioSource.mute);
     }
 
-
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Wyślij obecny stan do nowych listenerów
+        OnVolumeMuteChanged?.Invoke(_audioSource.volume, _audioSource.mute);
+    }
     private IEnumerator FadeVolume(float from, float to, float duration, Action onComplete = null)
     {
         float elapsed = 0f;

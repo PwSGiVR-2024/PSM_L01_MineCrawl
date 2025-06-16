@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 797049d1ce65e4a4cb67017143602fdd, type: 3}
-  m_Name: Skill_FireBall
+  m_Name: EarthSpike
   m_EditorClassIdentifier: 
-  skillName: FireBall
+  skillName: EarthSpike
   manaCost: 10
-  damage: 100
+  damage: 10
   hpCost: 0
   lifeSteal: 0
-  damagetype: 0
+  damagetype: 2
   category: 1
