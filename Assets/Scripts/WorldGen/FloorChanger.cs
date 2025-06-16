@@ -23,7 +23,7 @@ public class FloorChanger : CreateRoom
         floorData = GetComponent<CreateRoom>();
         currentFloor = 0;
         floors = new List<MapData>();
-        CreateFloorChanger(mapData);
+        //CreateFloorChanger(mapData);
     }
 
     private Vector2 GetSpawnPoint()
@@ -49,7 +49,7 @@ public class FloorChanger : CreateRoom
             altarSpawnPoint = GetSpawnPoint();
             distanceToAltarSpawn = Vector3.Distance(player.transform.position, altarSpawnPoint);
         }
-        print(altarSpawnPoint);
+
         if (GameObject.FindGameObjectWithTag("Finish") == null)
         {
             Instantiate(nextFloorAltarPrefab, altarSpawnPoint, Quaternion.identity);
@@ -88,9 +88,10 @@ public class FloorChanger : CreateRoom
         else if (floorNumber >= floors.Count)
         {
             Debug.Log("CREATE NEW: " + floorNumber + " FLOOR");
-            mapData = GenerateArray(64, 64);
-            mapData = GenerateFloor(mapData);
-            mapData = GenerateCorridors(mapData);
+            //mapData = GenerateArray(64, 64);
+            //mapData = GenerateFloor(mapData);
+            //mapData = GenerateCorridors(mapData);
+            mapData = CreateFloor();
             floors.Add(mapData);
 
             currentFloor = floorNumber;

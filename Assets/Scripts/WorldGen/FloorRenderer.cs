@@ -15,6 +15,7 @@ namespace Assets.Scripts.CreateRoom
 
         public void RenderMap(CreateRoom.MapData mapData)
         {
+            print("Render");
             groundMap.ClearAllTiles();
             wallsMap.ClearAllTiles();
 

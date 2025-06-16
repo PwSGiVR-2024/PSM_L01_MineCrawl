@@ -38,7 +38,8 @@ public class FinishAltar : MonoBehaviour
             {
                 floorChanger.ChangeFloor(1);
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            
+            if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 floorChanger.ChangeFloor(-1);
             }

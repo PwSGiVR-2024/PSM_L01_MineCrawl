@@ -43,7 +43,26 @@ namespace Assets.Scripts.CreateRoom
         protected MapData mapData;
         protected FloorRenderer renderer;
 
-        private void Awake()
+        private Vector2Int lastPlayerPos;
+        private GameObject player;
+
+        private void Start()
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+            lastPlayerPos = new Vector2Int(-1, -1);
+            print("Start: " + lastPlayerPos);
+            //CreateFloor();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                DumpMapToFile();
+            }
+        }
+
+        public MapData CreateFloor()
         {
             rooms = new List<Room>();
             //tilePallete.tiles = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
@@ -56,23 +75,37 @@ namespace Assets.Scripts.CreateRoom
             mapData = GenerateFloor(mapData);
             mapData = GenerateCorridors(mapData);
 
-            renderer = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorRenderer>();
-            renderer.RenderMap(mapData);
+            //renderer = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorRenderer>();
+            //renderer.RenderMap(mapData);
+            SpawnPlayer();
+
+            return mapData;
         }
 
-        void Start()
+        private void SpawnPlayer()
         {
-            //test
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            var room = GetRandomRoom();
-            player.transform.Translate(room.rootCoords.x, room.rootCoords.y, 0);
-        }
+            player = GameObject.FindGameObjectWithTag("Player");
+            print("X " + lastPlayerPos);
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (lastPlayerPos.x <= 0 && lastPlayerPos.y <= 0)
             {
-                DumpMapToFile();
+                var room = GetRandomRoom();
+                var coordsValue = mapData.mapArray[room.rootCoords.x][room.rootCoords.y];
+                print("First: "+ coordsValue);
+                while (coordsValue >= 0)//wall
+                {
+                    room = GetRandomRoom();
+                    coordsValue = mapData.mapArray[room.rootCoords.x][room.rootCoords.y];
+                }
+                print("Final: " + coordsValue);
+                player.transform.Translate(room.rootCoords.x, room.rootCoords.y, 0);
+                lastPlayerPos = new Vector2Int(room.rootCoords.x, room.rootCoords.y);
+                print("A " + lastPlayerPos);
+            }
+            else
+            {
+                player.transform.Translate(lastPlayerPos.x, lastPlayerPos.y, 0);
+                print("B " + lastPlayerPos);
             }
         }
 
