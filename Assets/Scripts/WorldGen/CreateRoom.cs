@@ -14,6 +14,7 @@ namespace Assets.Scripts.CreateRoom
             public int width;
             public int height;
             public int[][] mapArray;
+            public FinishAltar[] altars;
         }
 
         public struct Room
@@ -45,10 +46,12 @@ namespace Assets.Scripts.CreateRoom
 
         private Vector2Int lastPlayerPos;
         private GameObject player;
+        private FinishAltar altarCreator;
 
         private void Start()
         {
             player = GameObject.FindGameObjectWithTag("Player");
+            altarCreator = GetComponent<FinishAltar>();
             lastPlayerPos = new Vector2Int(-1, -1);
             print("Start: " + lastPlayerPos);
             //CreateFloor();
@@ -74,6 +77,10 @@ namespace Assets.Scripts.CreateRoom
             mapData = GenerateArray(64, 64);
             mapData = GenerateFloor(mapData);
             mapData = GenerateCorridors(mapData);
+            foreach(var altar in mapData.altars)
+            {
+                altar.SpawnAltar(mapData, 0);
+            }
 
             //renderer = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorRenderer>();
             //renderer.RenderMap(mapData);

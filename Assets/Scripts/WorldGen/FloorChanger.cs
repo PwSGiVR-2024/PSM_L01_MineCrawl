@@ -26,35 +26,35 @@ public class FloorChanger : CreateRoom
         //CreateFloorChanger(mapData);
     }
 
-    private Vector2 GetSpawnPoint()
-    {
-        altarSpawnRoom = floorData.GetRandomRoom();
-        altarSpawnPoint = altarSpawnRoom.rootCoords;
-        altarSpawnPoint.x += altarSpawnRoom.width / 2;
-        altarSpawnPoint.y += altarSpawnRoom.height / 2;
-        //check if ground
+    //private Vector2 GetSpawnPoint()
+    //{
+    //    altarSpawnRoom = floorData.GetRandomRoom();
+    //    altarSpawnPoint = altarSpawnRoom.rootCoords;
+    //    altarSpawnPoint.x += altarSpawnRoom.width / 2;
+    //    altarSpawnPoint.y += altarSpawnRoom.height / 2;
+    //    //check if ground
 
-        return altarSpawnPoint;
-    }
+    //    return altarSpawnPoint;
+    //}
 
-    private void CreateFloorChanger(MapData mapData)
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        altarSpawnPoint = GetSpawnPoint();
-        float distanceToAltarSpawn = Vector3.Distance(player.transform.position, altarSpawnPoint);
-        float allowedDistance = 2.0f;
+    //private void CreateFloorChanger(MapData mapData)
+    //{
+    //    GameObject player = GameObject.FindGameObjectWithTag("Player");
+    //    altarSpawnPoint = GetSpawnPoint();
+    //    float distanceToAltarSpawn = Vector3.Distance(player.transform.position, altarSpawnPoint);
+    //    float allowedDistance = 2.0f;
 
-        while (distanceToAltarSpawn <= allowedDistance)
-        {
-            altarSpawnPoint = GetSpawnPoint();
-            distanceToAltarSpawn = Vector3.Distance(player.transform.position, altarSpawnPoint);
-        }
+    //    while (distanceToAltarSpawn <= allowedDistance)
+    //    {
+    //        altarSpawnPoint = GetSpawnPoint();
+    //        distanceToAltarSpawn = Vector3.Distance(player.transform.position, altarSpawnPoint);
+    //    }
 
-        if (GameObject.FindGameObjectWithTag("Finish") == null)
-        {
-            Instantiate(nextFloorAltarPrefab, altarSpawnPoint, Quaternion.identity);
-        }
-    }
+    //    if (GameObject.FindGameObjectWithTag("Finish") == null)
+    //    {
+    //        Instantiate(nextFloorAltarPrefab, altarSpawnPoint, Quaternion.identity);
+    //    }
+    //}
 
     public void ChangeFloor(int floorChange)
     {
@@ -77,9 +77,10 @@ public class FloorChanger : CreateRoom
         if (floors.Count == 0 && floorNumber == 0)
         {
             Debug.Log("INITIALIZE FIRST FLOOR");
-            mapData = GenerateArray(64, 64);
-            mapData = GenerateFloor(mapData);
-            mapData = GenerateCorridors(mapData);
+            //mapData = GenerateArray(64, 64);
+            //mapData = GenerateFloor(mapData);
+            //mapData = GenerateCorridors(mapData);
+            mapData = CreateFloor();
             floors.Add(mapData);
             currentFloor = 0;
             highestFloor = 0;
@@ -111,6 +112,7 @@ public class FloorChanger : CreateRoom
         tilePalleteStone = Resources.LoadAll<TileBase>("Tile Palette/TP Wall");
 
         // Render updated floor
+        
         floorRenderer.RenderMap(mapData);
     }
 

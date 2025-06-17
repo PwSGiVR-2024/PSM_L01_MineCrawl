@@ -1,10 +1,20 @@
+using Assets.Scripts.CreateRoom;
 using UnityEngine;
 
-public class FinishAltar : MonoBehaviour
+public class FinishAltar : CreateRoom
 {
+    public enum Direction
+    {
+        Up = 0,
+        Down = 1
+    };
+    public Direction direction;
+    public GameObject altarPrefab;
+
     private FloorChanger floorChanger;
     private bool playerInRange;
     private GameObject player;
+    private Vector2 coords;
 
     private void Start()
     {
@@ -30,6 +40,19 @@ public class FinishAltar : MonoBehaviour
         }
     }
 
+    public MapData SpawnAltar(MapData mapData, Direction dir)
+    {
+        MapData tempMapData = mapData;
+
+        var room = rooms[Random.Range(0, rooms.Count)];
+        coords = new Vector2(room.rootCoords.x, room.rootCoords.y);
+        direction = dir;
+        tempMapData.altars.Add(this);
+        Instantiate(altarPrefab, coords, Quaternion.identity);
+
+        return tempMapData;
+    }
+
     private void Update()
     {
         if (playerInRange)
@@ -38,13 +61,15 @@ public class FinishAltar : MonoBehaviour
             {
                 floorChanger.ChangeFloor(1);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 floorChanger.ChangeFloor(-1);
             }
         }
-        
     }
 
 }
+
+
+

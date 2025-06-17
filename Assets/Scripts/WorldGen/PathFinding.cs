@@ -25,9 +25,6 @@ namespace Assets.Scripts.WorldGen
 
         //return grid
 
-        //TODO
-        //add direction bias
-
         private static Queue<(int x, int y)> visitedTiles = new Queue<(int x, int y)>();
 
         public static MapData RandomWalk(MapData mapData, Vector2Int start, int lengthLimit, List<Room> rooms)
@@ -111,6 +108,8 @@ namespace Assets.Scripts.WorldGen
                 walked++;
             }
 
+            tempMapData = EnsurePathConnections(tempMapData);
+
             return tempMapData;
         }
 
@@ -136,7 +135,7 @@ namespace Assets.Scripts.WorldGen
             {
                 foreach (var key in weightedDirections.Keys.ToList())
                 {
-                    weightedDirections[key] = (key == direction) ? Mathf.Max(0, weightedDirections[direction] + amount) : Mathf.Max(0, weightedDirections[direction] - amount); ;
+                    weightedDirections[key] = (key == direction) ? Mathf.Max(0, weightedDirections[direction] + amount) : Mathf.Max(0, weightedDirections[direction] - amount);
                 }
             }
 
@@ -175,6 +174,13 @@ namespace Assets.Scripts.WorldGen
             }
 
             return closestRoomCoords;
+        }
+
+        private static MapData EnsurePathConnections(MapData mapData)
+        {
+            MapData tempMapData = mapData;
+            //TODO
+            return tempMapData;
         }
     }
 }
