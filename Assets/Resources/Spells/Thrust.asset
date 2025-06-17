@@ -13,9 +13,18 @@ MonoBehaviour:
   m_Name: Thrust
   m_EditorClassIdentifier: 
   skillName: Thrust
-  manaCost: 0
-  damage: 15
-  hpCost: 0
-  lifeSteal: 0
-  damagetype: 6
+  description: 'A quick and precise forward strike, perfect for targeting single
+    foes. Deals 15 Physical damage.
+
+    No mana cost.'
   category: 0
+  damagetype: 6
+  useOnSelf: 0
+  manaCost: 0
+  hpCost: 0
+  effects: 00000000
+  damage: 15
+  healingAmount: 0
+  manaRegenAmount: 0
+  lifeSteal: 0
+  visualEffectPrefab: {fileID: 0}

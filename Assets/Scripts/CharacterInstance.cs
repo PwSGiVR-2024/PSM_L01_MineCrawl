@@ -13,18 +13,25 @@ public class CharacterInstance : ICharacter
     private int currentExp;
     private CharacterStats stats;
 
-    public int CurrentExp => currentExp;
     private int baseExpRequired = 100;
     private float expMultiplier = 1.5f;
 
+    public int CurrentExp => currentExp;
+
     public CharacterInstance(CharacterSO template)
     {
+        
         characterTemplate = template;
         level = template.baseLevel;
         currentExp = 0;
         stats = new CharacterStats();
 
         InitializeStats();
+    }
+    public void PrepareForBattle()
+    {
+        stats.ChangeStat(CharacterStats.StatType.CurrentHP, stats.GetStatValue(CharacterStats.StatType.MaxHP));
+        stats.ChangeStat(CharacterStats.StatType.Mana, stats.GetStatValue(CharacterStats.StatType.MaxMana));
     }
 
     private void InitializeStats()
@@ -38,25 +45,51 @@ public class CharacterInstance : ICharacter
         int endurance = stats.GetStatValue(CharacterStats.StatType.Endurance);
         int intelligence = stats.GetStatValue(CharacterStats.StatType.Intelligence);
 
-        stats.ChangeStat(CharacterStats.StatType.MaxHP, endurance * Race.hpPerEndurance);
-        stats.ChangeStat(CharacterStats.StatType.CurrentHP, endurance * Race.hpPerEndurance);
-        stats.ChangeStat(CharacterStats.StatType.MaxMana, intelligence * Race.manaPerIntelligence);
-        stats.ChangeStat(CharacterStats.StatType.Mana, intelligence * Race.manaPerIntelligence);
+        int maxHP = endurance * Race.hpPerEndurance;
+        int maxMana = intelligence * Race.manaPerIntelligence;
+
+        stats.ChangeStat(CharacterStats.StatType.MaxHP, maxHP);
+        stats.ChangeStat(CharacterStats.StatType.CurrentHP, maxHP);
+        stats.ChangeStat(CharacterStats.StatType.MaxMana, maxMana);
+        stats.ChangeStat(CharacterStats.StatType.Mana, maxMana);
     }
 
-public void TakeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         stats.ChangeStat(CharacterStats.StatType.CurrentHP, -amount);
-        Debug.Log($"{Name} otrzyma³ {amount} obra¿eñ. Aktualne HP: {stats.GetStatValue(CharacterStats.StatType.CurrentHP)}");
 
-        if (stats.GetStatValue(CharacterStats.StatType.CurrentHP) <= 0)
+        int currentHP = stats.GetStatValue(CharacterStats.StatType.CurrentHP);
+        int maxHP = stats.GetStatValue(CharacterStats.StatType.MaxHP);
+
+        if (currentHP > maxHP)
+            stats.ChangeStat(CharacterStats.StatType.CurrentHP, maxHP - currentHP);
+
+        Debug.Log($"{Name} otrzyma³ {amount} obra¿eñ. Aktualne HP: {currentHP}");
+
+        if (currentHP <= 0)
         {
+            stats.ChangeStat(CharacterStats.StatType.CurrentHP, 0);
             Debug.Log($"{Name} umiera.");
         }
+    }
 
-        if (stats.GetStatValue(CharacterStats.StatType.CurrentHP) > stats.GetStatValue(CharacterStats.StatType.MaxHP))
+    public void SpentMana(int amount)
+    {
+        stats.ChangeStat(CharacterStats.StatType.Mana, -amount);
+        int currentMana = stats.GetStatValue(CharacterStats.StatType.Mana);
+
+        if (currentMana < 0)
         {
-            stats.ChangeStat(CharacterStats.StatType.CurrentHP, stats.GetStatValue(CharacterStats.StatType.MaxHP) - stats.GetStatValue(CharacterStats.StatType.CurrentHP));
+            int overflow = -currentMana;
+            stats.ChangeStat(CharacterStats.StatType.CurrentHP, -overflow);
+            stats.ChangeStat(CharacterStats.StatType.Mana, -overflow); // resetuje do zera
+            Debug.Log($"{Name} wyczerpa³ manê — traci {overflow} HP!");
+        }
+
+        int maxMana = stats.GetStatValue(CharacterStats.StatType.MaxMana);
+        if (currentMana > maxMana)
+        {
+            stats.ChangeStat(CharacterStats.StatType.Mana, maxMana - currentMana);
         }
     }
 
@@ -89,7 +122,8 @@ public void TakeDamage(int amount)
 
     private void LevelUp()
     {
-        Debug.Log($"Level UP! Nowy poziom: {Level}");
+        Debug.Log($"LEVEL UP! Nowy poziom: {Level}");
+
         stats.ChangeStat(CharacterStats.StatType.MaxHP, 10);
         stats.ChangeStat(CharacterStats.StatType.CurrentHP, 10);
         stats.ChangeStat(CharacterStats.StatType.Strength, 2);
@@ -97,18 +131,21 @@ public void TakeDamage(int amount)
         stats.ChangeStat(CharacterStats.StatType.Agility, 1);
     }
 
-    public void SpentMana(int amount)
+    public void RestoreStat(CharacterStats.StatType statType, int amount)
     {
-        stats.ChangeStat(CharacterStats.StatType.Mana, -amount);
-        if (stats.GetStatValue(CharacterStats.StatType.Mana) <= 0)
-        {
-            stats.ChangeStat(CharacterStats.StatType.CurrentHP, stats.GetStatValue(CharacterStats.StatType.Mana)); // ujemne mana odbiera HP
-            stats.ChangeStat(CharacterStats.StatType.Mana, 0);
-        }
+        stats.ChangeStat(statType, amount);
 
-        if (stats.GetStatValue(CharacterStats.StatType.Mana) > stats.GetStatValue(CharacterStats.StatType.MaxMana))
+        int current = stats.GetStatValue(statType);
+        int max = statType switch
         {
-            stats.ChangeStat(CharacterStats.StatType.Mana, stats.GetStatValue(CharacterStats.StatType.MaxMana) - stats.GetStatValue(CharacterStats.StatType.Mana));
+            CharacterStats.StatType.CurrentHP => stats.GetStatValue(CharacterStats.StatType.MaxHP),
+            CharacterStats.StatType.Mana => stats.GetStatValue(CharacterStats.StatType.MaxMana),
+            _ => int.MaxValue
+        };
+
+        if (current > max)
+        {
+            stats.ChangeStat(statType, max - current);
         }
     }
 }

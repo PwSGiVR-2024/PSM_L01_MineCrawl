@@ -13,9 +13,20 @@ MonoBehaviour:
   m_Name: EarthSpike
   m_EditorClassIdentifier: 
   skillName: EarthSpike
-  manaCost: 10
-  damage: 10
-  hpCost: 0
-  lifeSteal: 0
-  damagetype: 2
+  description: 'You summon jagged spikes from the ground that pierce your enemy,
+    dealing 10 Earth damage. Especially effective against heavily armored foes.
+
+    Mana
+    cost: 10'
   category: 1
+  damagetype: 2
+  useOnSelf: 0
+  manaCost: 10
+  hpCost: 0
+  effects: 00000000
+  damage: 10
+  healingAmount: 0
+  manaRegenAmount: 0
+  lifeSteal: 0
+  visualEffectPrefab: {fileID: 1314945738539566, guid: 32c9fd11a72259d45aa26ae41c34c5aa, type: 3}
+  particleEffectType: 1

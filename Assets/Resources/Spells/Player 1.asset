@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Player 1
   m_EditorClassIdentifier: Assembly-CSharp::CharacterCreationData
-  name: Andrzej
-  selectedRace: {fileID: 11400000, guid: a8b8004eeea931b48a33f6159fb5340b, type: 2}
-  selectedClass: {fileID: 11400000, guid: 0e9910edb4c2a3247a2517a31464f4a3, type: 2}
+  name: 
+  selectedRace: {fileID: 0}
+  selectedClass: {fileID: 0}

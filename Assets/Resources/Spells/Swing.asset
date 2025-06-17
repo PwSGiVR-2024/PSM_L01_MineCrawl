@@ -13,9 +13,16 @@ MonoBehaviour:
   m_Name: Swing
   m_EditorClassIdentifier: 
   skillName: Swing
-  manaCost: 0
-  damage: 15
-  hpCost: 0
-  lifeSteal: 0
-  damagetype: 6
+  description: A wide, sweeping attack with your weapon that hits the enemy in front
+    of you for 15 Physical damage. A reliable move with no mana cost.
   category: 0
+  damagetype: 6
+  useOnSelf: 0
+  manaCost: 0
+  hpCost: 0
+  effects: 00000000
+  damage: 15
+  healingAmount: 0
+  manaRegenAmount: 0
+  lifeSteal: 0
+  visualEffectPrefab: {fileID: 0}

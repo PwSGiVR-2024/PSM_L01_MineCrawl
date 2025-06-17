@@ -44,8 +44,31 @@ public class CharacterStats
     {
         switch (stat)
         {
-            case StatType.MaxHP: MaxHP += amount; break;
-            case StatType.CurrentHP: CurrentHP += amount; break;
+            case StatType.MaxHP:
+                MaxHP += amount;
+                if (MaxHP < 1) MaxHP = 1; // zabezpieczenie
+                if (CurrentHP > MaxHP) CurrentHP = MaxHP;
+                break;
+
+            case StatType.CurrentHP:
+                CurrentHP += amount;
+                if (CurrentHP > MaxHP) CurrentHP = MaxHP;
+                if (CurrentHP < 0) CurrentHP = 0;
+                break;
+
+            case StatType.MaxMana:
+                MaxMana += amount;
+                if (MaxMana < 0) MaxMana = 0;
+                if (Mana > MaxMana) Mana = MaxMana;
+                break;
+
+            case StatType.Mana:
+                Mana += amount;
+                if (Mana > MaxMana) Mana = MaxMana;
+                if (Mana < 0) Mana = 0;
+                break;
+
+            // pozosta³e statystyki bez ograniczeñ:
             case StatType.Strength: Strength += amount; break;
             case StatType.Perception: Perception += amount; break;
             case StatType.Endurance: Endurance += amount; break;
@@ -55,11 +78,13 @@ public class CharacterStats
             case StatType.Luck: Luck += amount; break;
             case StatType.Attack: Attack += amount; break;
             case StatType.Defense: Defense += amount; break;
-            case StatType.Mana: Mana += amount; break;
-            case StatType.MaxMana: MaxMana += amount; break;
-            default: Debug.LogWarning("Nieznany stat: " + stat); break;
+
+            default:
+                Debug.LogWarning("Nieznany stat: " + stat);
+                break;
         }
     }
+
     public int GetStatValue(StatType stat)
     {
         return stat switch
