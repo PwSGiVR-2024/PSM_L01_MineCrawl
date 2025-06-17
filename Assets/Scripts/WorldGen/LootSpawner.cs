@@ -1,5 +1,7 @@
 using UnityEngine;
-
+/*
+Spawns and manages loot on the floor. 
+*/
 public class LootSpawner : MonoBehaviour
 {
     public GameObject treasure;

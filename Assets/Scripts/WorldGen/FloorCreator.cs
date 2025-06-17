@@ -7,7 +7,21 @@ using System.IO;
 
 namespace Assets.Scripts.CreateRoom
 {
-    public class CreateRoom : MonoBehaviour
+    /*
+    Creates and manages data about floor in MapData struct.
+    Generates rooms, walls and paths* and saves them to 2D array as values.
+    They are then used by FloorRenderer to draw them on a tilemap.
+
+    *Paths are generated using PathFinding class.
+    
+
+    TODO:
+    - refactor
+    - prefer unityengine.random
+    - player.transform.position = new Vector3(room.rootCoords.x, room.rootCoords.y, player.transform.position.z); insead of translate
+    - scriptable object instaed of LoadAll
+    */
+    public class FloorCreator : MonoBehaviour
     {
         public struct MapData
         {
@@ -219,6 +233,7 @@ namespace Assets.Scripts.CreateRoom
                 tempMapData = PathFinding.RandomWalk(mapData, new Vector2Int(start.x, start.y), 500, rooms);//500 cigarettes default
             }
 
+
             return tempMapData;
         }
 
@@ -241,7 +256,7 @@ namespace Assets.Scripts.CreateRoom
                     string line = "";
                     for (int x = 0; x < cols; x++)
                     {
-                        line += mapData.mapArray[y][x].ToString().PadLeft(2, ' ') + " ";
+                        line += mapData.mapArray[x][y].ToString().PadLeft(2, ' ') + " ";
                     }
                     writer.WriteLine(line.Trim());
                 }

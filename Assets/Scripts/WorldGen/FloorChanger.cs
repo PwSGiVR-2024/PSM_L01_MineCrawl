@@ -4,12 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-
-public class FloorChanger : CreateRoom
+/*
+Keeps info about floors in List<MapData>
+Responsible for creation and management of FloorAltars, i.e.:
+    - where they are on the map
+    - which way do they go
+*/
+public class FloorChanger : FloorCreator
 {
     public GameObject nextFloorAltarPrefab;
 
-    private CreateRoom floorData;
+    private FloorCreator floorData;
     private FloorRenderer floorRenderer;
     private Room altarSpawnRoom;
     private Vector2 altarSpawnPoint;
@@ -20,7 +25,7 @@ public class FloorChanger : CreateRoom
     private void Start()
     {
         floorRenderer = GetComponent<FloorRenderer>();
-        floorData = GetComponent<CreateRoom>();
+        floorData = GetComponent<FloorCreator>();
         currentFloor = 0;
         floors = new List<MapData>();
         //CreateFloorChanger(mapData);

@@ -1,10 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Assets.Scripts.CreateRoom.CreateRoom;
+using static Assets.Scripts.CreateRoom.FloorCreator;
 
 namespace Assets.Scripts.WorldGen
 {
+    /*
+    Creates paths between rooms.
+    Its base is Drunkards/Random Walk algorithm with custom biases to direction.
+
+    TODO:
+    - EnsurePathConnections
+    */
     public static class PathFinding
     {
         //drunkardWalk(grid, startX, startY, targetTileCount) :
@@ -24,7 +31,8 @@ namespace Assets.Scripts.WorldGen
         //    if direction == right and x<width - 1: x += 1
 
         //return grid
-
+        
+        //soudlnt be static
         private static Queue<(int x, int y)> visitedTiles = new Queue<(int x, int y)>();
 
         public static MapData RandomWalk(MapData mapData, Vector2Int start, int lengthLimit, List<Room> rooms)
@@ -35,7 +43,7 @@ namespace Assets.Scripts.WorldGen
             int walked = 0;
 
             int width = tempMapData.mapArray.Length;
-            int height = tempMapData.mapArray[0].Length; // assumes uniform row length
+            int height = tempMapData.mapArray[0].Length;
 
             while (walked < lengthLimit)
             {
@@ -91,7 +99,7 @@ namespace Assets.Scripts.WorldGen
                 {
                     dir = Directions.GetRandom();
                 }
-                lastDirection = dir;
+                //lastDirection = dir;
 
                 // preview move
                 int nextX = startX + dir.x;
@@ -135,7 +143,10 @@ namespace Assets.Scripts.WorldGen
             {
                 foreach (var key in weightedDirections.Keys.ToList())
                 {
-                    weightedDirections[key] = (key == direction) ? Mathf.Max(0, weightedDirections[direction] + amount) : Mathf.Max(0, weightedDirections[direction] - amount);
+                    if (key == direction)
+                        weightedDirections[key] += amount;
+                    else
+                        weightedDirections[key] = Mathf.Max(1, weightedDirections[key] - 1);
                 }
             }
 
@@ -161,9 +172,10 @@ namespace Assets.Scripts.WorldGen
         private static (int x, int y) FindClosestRoom(MapData mapData, List<Room> rooms, (int x, int y) currPosition)
         {
             (int x, int y) closestRoomCoords = (-1,-1);
-            float minDistance = 0.0f;
+            //float minDistance = 0.0f;
+            float minDistance = float.MaxValue;
 
-            foreach(var room in rooms)
+            foreach (var room in rooms)
             {
                 float currDistance = Mathf.Sqrt(Mathf.Pow(room.rootCoords.x - currPosition.x, 2) + Mathf.Pow(room.rootCoords.y - currPosition.y, 2)); //distance (not manhattan)
                 if (currDistance < minDistance)
@@ -180,6 +192,9 @@ namespace Assets.Scripts.WorldGen
         {
             MapData tempMapData = mapData;
             //TODO
+            //1. Flood fill
+            //2. Union find
+            //3. Minimal Spanning Tree
             return tempMapData;
         }
     }

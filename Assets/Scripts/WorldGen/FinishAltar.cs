@@ -1,7 +1,14 @@
 using Assets.Scripts.CreateRoom;
 using UnityEngine;
 
-public class FinishAltar : CreateRoom
+/*
+Enables player to go up/down between floors
+Goal is to go down, therefore player should look for Down Altars.
+Up Altar is in the same place the player is when moved to new floor.
+Down Altar becoms Up Altar on the next floor.
+*/
+
+public class FinishAltar : FloorCreator
 {
     public enum Direction
     {
@@ -47,7 +54,18 @@ public class FinishAltar : CreateRoom
         var room = rooms[Random.Range(0, rooms.Count)];
         coords = new Vector2(room.rootCoords.x, room.rootCoords.y);
         direction = dir;
-        tempMapData.altars.Add(this);
+        switch (dir)
+        {
+            case Direction.Up:
+                tempMapData.altars[0] = this;
+                break;
+            case Direction.Down:
+                tempMapData.altars[1] = this;
+                break;
+            default:
+                break;
+        }
+        
         Instantiate(altarPrefab, coords, Quaternion.identity);
 
         return tempMapData;
