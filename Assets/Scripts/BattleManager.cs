@@ -217,7 +217,8 @@ public class BattleManager : MonoBehaviour
 
         if (!skill.selfUse && enemy.Stats.IsDead)
         {
-            EndBattle(true);
+            StartCoroutine(EndBattle(true)); // lub false
+
         }
         else
         {
@@ -319,7 +320,8 @@ public class BattleManager : MonoBehaviour
 
             if (!chosenSkill.selfUse && player.Stats.IsDead)
             {
-                EndBattle(false);
+                StartCoroutine(EndBattle(false)); // lub false
+
                 yield break;
             }
         }
@@ -371,16 +373,23 @@ public class BattleManager : MonoBehaviour
         c.a = 0;
         hurtScreen.color = c;
     }
-
-    void EndBattle(bool playerWon)
+    private IEnumerator EndBattle(bool playerWon)
     {
         LogManager.Instance.Log(playerWon ? "You won the battle!" : "You lost the battle...");
-        StartCoroutine(LoadNextScene());
-    }
 
-    IEnumerator LoadNextScene()
-    {
+        
+
         yield return new WaitForSeconds(1.5f);
-        SceneManager.LoadScene("Main menu");
+
+        if (playerWon)
+        {
+            int expReward = 5 + 2 * 2; // przykładowa nagroda
+            player.GainExp(expReward);
+            SceneManager.LoadScene(BattleTransferData.previousSceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene("Main menu");
+        }
     }
 }

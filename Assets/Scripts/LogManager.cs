@@ -11,7 +11,7 @@ public class LogManager : MonoBehaviour
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private int maxLines = 200;
 
-    private readonly Queue<string> persistentLogLines = new Queue<string>();
+    private static readonly Queue<string> persistentLogLines = new Queue<string>();
 
     private void Awake()
     {
@@ -24,29 +24,33 @@ public class LogManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-       // UpdateLogText();
+       UpdateLogText();
     }
 
     public void Log(string message)
     {
+        string timestamp = System.DateTime.Now.ToString("HH:mm:ss");
+        string fullMessage = $"[{timestamp}] {message}";
+
         if (persistentLogLines.Count >= maxLines)
             persistentLogLines.Dequeue();
 
-        persistentLogLines.Enqueue(message);
-        //UpdateLogText();
+        persistentLogLines.Enqueue(fullMessage);
+        UpdateLogText();
     }
 
-    //private void UpdateLogText()
-    //{
-    //    if (logText != null)
-    //    {
-    //        logText.text = string.Join("\n", persistentLogLines);
 
-    //        if (scrollRect != null)
-    //        {
-    //            Canvas.ForceUpdateCanvases(); // wymusza layout UI
-    //            scrollRect.verticalNormalizedPosition = 1f; // scroll do do³u
-    //        }
-    //    }
-    //}
+    private void UpdateLogText()
+    {
+        if (logText != null)
+        {
+            logText.text = string.Join("\n", persistentLogLines);
+
+            if (scrollRect != null)
+            {
+                Canvas.ForceUpdateCanvases(); // wymusza layout UI
+                scrollRect.verticalNormalizedPosition = 0f; // scroll do do³u
+            }
+        }
+    }
 }

@@ -16,13 +16,14 @@ public enum SkillEffectType
     Buff,
     Debuff
 }
+
 public enum ParticleEffectType
 {
-    
     OnTarget,
     Projectile,
     SelfCast
 }
+
 [CreateAssetMenu(fileName = "NewSkill", menuName = "RPG/Skills")]
 public class SkillsSO : ScriptableObject, ISkill
 {
@@ -57,38 +58,55 @@ public class SkillsSO : ScriptableObject, ISkill
     public int Damage => damage;
     public bool selfUse => useOnSelf;
     public List<SkillEffectType> Effects => effects;
- 
-
 
     public virtual void Activate(ICharacter user, ICharacter target)
     {
-        Debug.Log($"{user.Name} używa {skillName} na {target.Name}");
+        // Najpierw log użycia skilla
+        LogManager.Instance.Log($"{user.Name} uses {skillName} on {target.Name}.");
+
+        if (manaCost > 0)
+            LogManager.Instance.Log($"{user.Name} spends {manaCost} mana.");
+        if (hpCost > 0)
+            LogManager.Instance.Log($"{user.Name} sacrifices {hpCost} HP.");
 
         user.SpentMana(manaCost);
         user.TakeDamage(hpCost);
 
+        // Efekty najpierw, potem logi o efektach
         foreach (var effect in effects)
         {
             switch (effect)
             {
                 case SkillEffectType.Damage:
                     target.TakeDamage(damage);
+                    LogManager.Instance.Log($"{target.Name} takes {damage} {damagetype} damage.");
                     break;
+
                 case SkillEffectType.Heal:
                     target.TakeDamage(-healingAmount);
+                    LogManager.Instance.Log($"{target.Name} is healed for {healingAmount} HP.");
                     break;
+
                 case SkillEffectType.ManaRegen:
                     target.Stats.ChangeStat(CharacterStats.StatType.Mana, manaRegenAmount);
+                    LogManager.Instance.Log($"{target.Name} regenerates {manaRegenAmount} mana.");
                     break;
-                // Tu można dodać Buffy, Debuffy, itd. ale to może kiedyś jak będzie czas :P
+
+                case SkillEffectType.Buff:
+                    LogManager.Instance.Log($"{target.Name} is empowered by a buff. (Effect TBD)");
+                    break;
+
+                case SkillEffectType.Debuff:
+                    LogManager.Instance.Log($"{target.Name} suffers a debuff. (Effect TBD)");
+                    break;
             }
         }
 
-        if (lifeSteal > 0)
+        if (lifeSteal > 0 && effects.Contains(SkillEffectType.Damage))
         {
             int stolen = LifeSteal(damage, lifeSteal);
             user.TakeDamage(-stolen);
-            Debug.Log($"{user.Name} ukradł {stolen} HP");
+            LogManager.Instance.Log($"{user.Name} steals {stolen} HP from {target.Name}.");
         }
     }
 

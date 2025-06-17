@@ -88,12 +88,12 @@ public class Movement : MonoBehaviour
         if (spriteRenderer != null && dir.x != 0)
             spriteRenderer.flipX = (dir.x < 0);
 
-        if (IsEnemyAtPosition(newPos, out GameObject enemy))
-        {
-            Debug.Log("Spotkano przeciwnika: " + enemy.name);
-            enemy.GetComponent<Enemy>().Battle();
-            return;
-        }
+        //if (IsEnemyAtPosition(newPos, out GameObject enemy))
+        //{
+        //    Debug.Log("Spotkano przeciwnika: " + enemy.name);
+        //    enemy.GetComponent<Enemy>().Battle();
+        //    return;
+        //}
 
         if (IsWalkable(newPos))
         {
@@ -130,23 +130,23 @@ public class Movement : MonoBehaviour
         return tile != null;
     }
 
-    private bool IsEnemyAtPosition(Vector3Int gridPos, out GameObject enemy)
-    {
-        Vector3 worldPos = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0);
-        Collider2D[] hits = Physics2D.OverlapCircleAll(worldPos, 0.1f);
+    //private bool IsEnemyAtPosition(Vector3Int gridPos, out GameObject enemy)
+    //{
+    //    Vector3 worldPos = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0);
+    //    Collider2D[] hits = Physics2D.OverlapCircleAll(worldPos, 0.1f);
 
-        foreach (var hit in hits)
-        {
-            if (hit.CompareTag("Enemy"))
-            {
-                enemy = hit.gameObject;
-                return true;
-            }
-        }
+    //    foreach (var hit in hits)
+    //    {
+    //        if (hit.CompareTag("Enemy"))
+    //        {
+    //            enemy = hit.gameObject;
+    //            return true;
+    //        }
+    //    }
 
-        enemy = null;
-        return false;
-    }
+    //    enemy = null;
+    //    return false;
+    //}
 
 
     private void TryTriggerRandomEncounter()
@@ -164,7 +164,6 @@ public class Movement : MonoBehaviour
             enemyTemplate.baseStats = new CharacterStats();
 
             CharacterInstance enemyInstance = new CharacterInstance(enemyTemplate);
-
             BattleTransferData.enemyInstance = enemyInstance;
 
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -181,7 +180,9 @@ public class Movement : MonoBehaviour
             BattleTransferData.playerPosition = transform.position;
             BattleTransferData.cameFromBattle = true;
 
+            LogManager.Instance.Log($"A wild {enemyTemplate.characterName} appears!");
             SceneManager.LoadScene("BattleScene");
         }
+
     }
 }

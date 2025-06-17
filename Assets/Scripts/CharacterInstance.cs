@@ -1,3 +1,4 @@
+// CharacterInstance.cs
 using UnityEngine;
 
 public class CharacterInstance : ICharacter
@@ -20,7 +21,6 @@ public class CharacterInstance : ICharacter
 
     public CharacterInstance(CharacterSO template)
     {
-        
         characterTemplate = template;
         level = template.baseLevel;
         currentExp = 0;
@@ -28,6 +28,7 @@ public class CharacterInstance : ICharacter
 
         InitializeStats();
     }
+
     public void PrepareForBattle()
     {
         stats.ChangeStat(CharacterStats.StatType.CurrentHP, stats.GetStatValue(CharacterStats.StatType.MaxHP));
@@ -64,12 +65,12 @@ public class CharacterInstance : ICharacter
         if (currentHP > maxHP)
             stats.ChangeStat(CharacterStats.StatType.CurrentHP, maxHP - currentHP);
 
-        Debug.Log($"{Name} otrzyma³ {amount} obra¿eñ. Aktualne HP: {currentHP}");
+        LogManager.Instance.Log($"{Name} took {amount} damage. HP: {Mathf.Max(currentHP, 0)}/{maxHP}");
 
         if (currentHP <= 0)
         {
             stats.ChangeStat(CharacterStats.StatType.CurrentHP, 0);
-            Debug.Log($"{Name} umiera.");
+            LogManager.Instance.Log($"{Name} has been defeated.");
         }
     }
 
@@ -82,8 +83,8 @@ public class CharacterInstance : ICharacter
         {
             int overflow = -currentMana;
             stats.ChangeStat(CharacterStats.StatType.CurrentHP, -overflow);
-            stats.ChangeStat(CharacterStats.StatType.Mana, -overflow); // resetuje do zera
-            Debug.Log($"{Name} wyczerpa³ manê — traci {overflow} HP!");
+            stats.ChangeStat(CharacterStats.StatType.Mana, -overflow);
+            LogManager.Instance.Log($"{Name} ran out of mana and lost {overflow} HP!");
         }
 
         int maxMana = stats.GetStatValue(CharacterStats.StatType.MaxMana);
@@ -101,7 +102,7 @@ public class CharacterInstance : ICharacter
     public void GainExp(int amount)
     {
         currentExp += amount;
-        Debug.Log($"Zdobyto {amount} EXP. Aktualne: {currentExp}/{GetExpForNextLevel()}");
+        LogManager.Instance.Log($"Gained {amount} EXP. Current: {currentExp}/{GetExpForNextLevel()}");
         CheckLevelUp();
     }
 
@@ -122,7 +123,7 @@ public class CharacterInstance : ICharacter
 
     private void LevelUp()
     {
-        Debug.Log($"LEVEL UP! Nowy poziom: {Level}");
+        LogManager.Instance.Log($"LEVEL UP! {Name} reached level {Level}!");
 
         stats.ChangeStat(CharacterStats.StatType.MaxHP, 10);
         stats.ChangeStat(CharacterStats.StatType.CurrentHP, 10);
