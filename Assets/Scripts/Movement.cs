@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
     private float holdDelay = 0.15f;
     private float holdTimer = 0f;
 
-    private float encounterChance = 0.03f;
+    private float encounterChance = 0.03f;//0.03f
 
     private void Start()
     {
@@ -180,8 +180,8 @@ public class Movement : MonoBehaviour
             BattleTransferData.previousSceneName = SceneManager.GetActiveScene().name;
             BattleTransferData.playerPosition = transform.position;
             BattleTransferData.cameFromBattle = true;
-
-            SceneManager.LoadScene("BattleScene");
+            SceneManager.LoadScene("BattleScene", LoadSceneMode.Additive);
+            //SceneManager.LoadScene("BattleScene");
         }
     }
 }

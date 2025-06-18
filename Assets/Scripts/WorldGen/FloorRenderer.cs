@@ -64,13 +64,12 @@ namespace Assets.Scripts.CreateRoom
 
         public void RenderMap(FloorCreator.MapData mapData)
         {
-            print("Render");
             groundMap.ClearAllTiles();
             wallsMap.ClearAllTiles();
             
-            tilePallete = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
+            tilePallete = Resources.LoadAll<TileBase>("Tile Palette/TP Wall");//TP Grass
             //Array.Resize(ref tilePallete.tiles, 32); //include only clean grass
-            Array.Resize(ref tilePallete, 32); //include only clean grass
+            //Array.Resize(ref tilePallete, 32); //include only clean grass
             //tilePalleteStone = Resources.LoadAll<TileBase>("Tile Palette/TP Wall");
             for (int x = 0; x < mapData.width; x++)
             {
@@ -93,7 +92,8 @@ namespace Assets.Scripts.CreateRoom
                         default:
                             if (value >= 0 && value < tilePallete.Length)
                             {
-                                wallsMap.SetTile(pos, tilePallete[value]);
+                                //wallsMap.SetTile(pos, tilePallete[value]);
+                                wallsMap.SetTile(pos, tilePallete[49]);
                             }
                             break;
                     }

@@ -588,8 +588,8 @@ MonoBehaviour:
   wallsMap: {fileID: 1636998431}
   tilePallete:
   - {fileID: 0}
-  rootTile: {fileID: 11400000, guid: 5fe40d7b004adde4293bdf59101e1f97, type: 2}
-  roomTile: {fileID: 11400000, guid: 503914639ae436b4e82c313961715c35, type: 2}
+  rootTile: {fileID: 11400000, guid: b52eb31537a3c0f4d9b909925745af72, type: 2}
+  roomTile: {fileID: 11400000, guid: d85a59ea5ef7b6d488d8434610470f09, type: 2}
   pathTile: {fileID: 11400000, guid: f5945c4f4a016ae419bd0fb1152e2d1a, type: 2}
 --- !u!114 &432121872
 MonoBehaviour:
@@ -4850,6 +4850,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7165345443525709292, guid: 95b07919f83dfd04d98198878f38cb9f, type: 3}
+      propertyPath: tile
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fe40d7b004adde4293bdf59101e1f97, type: 2}
+    - target: {fileID: 7165345443525709292, guid: 95b07919f83dfd04d98198878f38cb9f, type: 3}
+      propertyPath: rootTile
+      value: 
+      objectReference: {fileID: 11400000, guid: f332210fa22ba8549b6ac4d19975e7b1, type: 2}
     - target: {fileID: 7165345443525709292, guid: 95b07919f83dfd04d98198878f38cb9f, type: 3}
       propertyPath: wallsMap
       value: 

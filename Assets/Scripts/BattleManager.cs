@@ -226,7 +226,8 @@ public class BattleManager : MonoBehaviour
         {
             int expReward = 5 + 2 * 2;
             player.GainExp(expReward);
-            SceneManager.LoadScene(BattleTransferData.previousSceneName);
+            SceneManager.UnloadSceneAsync("BattleScene");
+            //SceneManager.LoadScene(BattleTransferData.previousSceneName);
         }
         else
         {
