@@ -162,7 +162,8 @@ public class Movement : MonoBehaviour
             enemyTemplate.characterName = $"{race.raceName} {cls.className}";
             enemyTemplate.race = race;
             enemyTemplate.characterClass = cls;
-            enemyTemplate.baseLevel = 1;
+            int currentFloor = FloorChanger.GetHighestFloor;
+            enemyTemplate.baseLevel = Mathf.Max(1, currentFloor); // przynajmniej level 1
             enemyTemplate.baseStats = new CharacterStats();
 
             CharacterInstance enemyInstance = new CharacterInstance(enemyTemplate);

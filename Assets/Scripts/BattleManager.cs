@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEditor.Experimental.GraphView;
 
 public static class BattleTransferData
 {
@@ -38,6 +39,18 @@ public class BattleManager : MonoBehaviour
     private CharacterInstance player;
     private CharacterInstance enemy;
     private bool isAnimating = false;
+    [SerializeField] private GameObject popupTextPrefab;
+    public void ShowDamagePopup(int amount, bool isHealing, Transform aboveTransform)
+    {
+        Vector3 spawnPos = aboveTransform.position + new Vector3(0, 2f, 0); // nad głową
+        GameObject popupGO = Instantiate(popupTextPrefab, spawnPos, Quaternion.identity);
+        DamagePopup popup = popupGO.GetComponent<DamagePopup>();
+
+        Color color = isHealing ? Color.green : Color.red;
+        string text = isHealing ? $"+{amount}" : $"-{amount}";
+
+        popup.Setup(text, color);
+    }
 
     void Start()
     {
@@ -85,7 +98,7 @@ public class BattleManager : MonoBehaviour
             blockerPanel.SetActive(false);
             waitButton.interactable = true;
             LogManager.Instance.Log("Your turn.");
-            // Czekaj aż gracz kliknie przycisk albo wykona akcję (w metodach PlayerAttack i WaitTurn kontynuujemy)
+
             SetAnimationLock(false);
         }
         else
@@ -264,9 +277,18 @@ public class BattleManager : MonoBehaviour
 
         Transform fromTransform = playerSpawnPoint;
         Transform toTransform = skill.selfUse ? playerSpawnPoint : enemySpawnPoint;
+        int hpBefore = target.Stats.GetStatValue(CharacterStats.StatType.CurrentHP);
         player.UseSkill(skill, target);
-
-
+        int hpAfter = target.Stats.GetStatValue(CharacterStats.StatType.CurrentHP);
+        bool isHealing = skill.Damage < 0 || skill.Effects.Contains(SkillEffectType.Heal);
+        bool isLifeSteal =skill.Vampire > 0 ? true : false;
+        int amount = Mathf.Abs(hpAfter-hpBefore); 
+        ShowDamagePopup(amount, isHealing, skill.selfUse ? playerSpawnPoint : enemySpawnPoint);
+        if (isLifeSteal)
+        {
+            amount = Mathf.CeilToInt(Mathf.Abs(amount * skill.Vampire));
+            ShowDamagePopup(amount, true, playerSpawnPoint);
+        }
         UpdateUI();
 
         yield return StartCoroutine(PlaySkillEffect(skill.VisualEffectPrefab, fromTransform, toTransform, skill.EffectType));
@@ -370,7 +392,19 @@ public class BattleManager : MonoBehaviour
             ICharacter target = chosenSkill.selfUse ? enemy : player;
             Transform fromTransform = enemySpawnPoint;
             Transform toTransform = chosenSkill.selfUse ? enemySpawnPoint : playerSpawnPoint;
+            int hpBefore = target.Stats.GetStatValue(CharacterStats.StatType.CurrentHP);
             enemy.UseSkill(chosenSkill, target);
+            int hpAfter = target.Stats.GetStatValue(CharacterStats.StatType.CurrentHP);
+            bool isHealing = chosenSkill.Damage < 0 || chosenSkill.Effects.Contains(SkillEffectType.Heal);
+            bool isLifeSteal = chosenSkill.Vampire > 0 ? true : false;
+            int amount = Mathf.Abs(hpAfter - hpBefore);
+            ShowDamagePopup(amount, isHealing, chosenSkill.selfUse ? enemySpawnPoint : playerSpawnPoint);
+            if (isLifeSteal)
+            {
+                amount = Mathf.CeilToInt(Mathf.Abs(amount * chosenSkill.Vampire));
+                ShowDamagePopup(amount, true, enemySpawnPoint);
+            }
+            
             yield return StartCoroutine(PlaySkillEffect(chosenSkill.VisualEffectPrefab, fromTransform, toTransform, chosenSkill.EffectType));
 
            

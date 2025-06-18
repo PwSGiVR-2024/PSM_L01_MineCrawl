@@ -1545,8 +1545,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 82ed6540c0a8f2c45b64288b1380da03, type: 3}
-  m_Resource: {fileID: 8300000, guid: 82ed6540c0a8f2c45b64288b1380da03, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ebaea0ba045306a4e870c969e849702e, type: 3}
+  m_Resource: {fileID: 8300000, guid: ebaea0ba045306a4e870c969e849702e, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1659,7 +1659,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924ec1e652d3c1743b9ba6f44a8e2e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NoImage: {fileID: 0}
+  mainMenuClip: {fileID: 8300000, guid: 82ed6540c0a8f2c45b64288b1380da03, type: 3}
+  battleClip: {fileID: 8300000, guid: 1081de61f3889294093bb2e86703784a, type: 3}
+  explorationClip: {fileID: 8300000, guid: ebaea0ba045306a4e870c969e849702e, type: 3}
 --- !u!1 &915559767
 GameObject:
   m_ObjectHideFlags: 0
@@ -2902,7 +2904,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   raceDropdown: {fileID: 0}
   classDropdown: {fileID: 0}
-  characterDataTemplate: {fileID: 11400000, guid: c83aab6b7420bb347b2d190129b5d935, type: 2}
   availableRaces: []
   availableClasses: []
   nameField: {fileID: 0}

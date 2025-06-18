@@ -69,6 +69,24 @@ public class CharacterInstance : ICharacter
         if (Race != null) stats.Add(Race.baseStats);
         if (Class != null) stats.Add(Class.baseStats);
         stats.Add(characterTemplate.baseStats);
+        // Skalowanie statystyk z poziomem
+        // Skalowanie statystyk przeciwnika przez losowoœæ
+        if (characterTemplate != null && BattleTransferData.cameFromBattle)
+        {
+            int floor = FloorChanger.GetHighestFloor;
+
+            int extraStatsToAdd = Random.Range(1, 4); // 1 do 3 statystyk
+            var statTypes = System.Enum.GetValues(typeof(CharacterStats.StatType));
+
+            for (int i = 0; i < extraStatsToAdd; i++)
+            {
+                CharacterStats.StatType randomStat = (CharacterStats.StatType)statTypes.GetValue(Random.Range(0, statTypes.Length));
+                int bonus = Random.Range(1, 4) + floor / 2; // Skalowanie z piêtrem
+                stats.ChangeStat(randomStat, bonus);
+
+                LogManager.Instance.Log($"[DEBUG] Added +{bonus} to {randomStat} due to floor scaling.");
+            }
+        }
 
         int endurance = stats.GetStatValue(CharacterStats.StatType.Endurance);
         int intelligence = stats.GetStatValue(CharacterStats.StatType.Intelligence);
@@ -151,12 +169,22 @@ public class CharacterInstance : ICharacter
     private void LevelUp()
     {
         LogManager.Instance.Log($"LEVEL UP! {Name} reached level {Level}!");
+        if (characterTemplate != null && BattleTransferData.cameFromBattle)
+        {
+            int floor = FloorChanger.GetHighestFloor;
 
-        stats.ChangeStat(CharacterStats.StatType.MaxHP, 10);
-        stats.ChangeStat(CharacterStats.StatType.CurrentHP, 10);
-        stats.ChangeStat(CharacterStats.StatType.Strength, 2);
-        stats.ChangeStat(CharacterStats.StatType.Defense, 2);
-        stats.ChangeStat(CharacterStats.StatType.Agility, 1);
+            int extraStatsToAdd = Random.Range(1, 4); // 1 do 3 statystyk
+            var statTypes = System.Enum.GetValues(typeof(CharacterStats.StatType));
+
+            for (int i = 0; i < extraStatsToAdd; i++)
+            {
+                CharacterStats.StatType randomStat = (CharacterStats.StatType)statTypes.GetValue(Random.Range(0, statTypes.Length));
+                int bonus = Random.Range(1, 4) + floor / 2; // Skalowanie z piêtrem
+                stats.ChangeStat(randomStat, bonus);
+
+                LogManager.Instance.Log($"[DEBUG] Added +{bonus} to {randomStat} due to floor scaling.");
+            }
+        }
     }
 
     public void RestoreStat(CharacterStats.StatType statType, int amount)

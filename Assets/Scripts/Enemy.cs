@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
         if (string.IsNullOrEmpty(enemyID))
             enemyID = characterInstance.Name;
 
-        ScaleStatsByFloor(5); // Przyk³ad skalowania statystyk
+        ScaleStatsByFloor(FloorChanger.GetHighestFloor); // Przyk³ad skalowania statystyk
 
         // Mo¿esz tutaj ustawiæ np. UI lub inne rzeczy powi¹zane z przeciwnikiem
     }

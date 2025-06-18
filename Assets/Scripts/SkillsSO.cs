@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor.Rendering.Analytics;
 using UnityEngine;
 
 public enum SkillCategory
@@ -58,7 +59,7 @@ public class SkillsSO : ScriptableObject, ISkill
     [SerializeField] private int healingAmount;
     [SerializeField] private int manaRegenAmount;
     [SerializeField] private float lifeSteal;
-
+    public float Vampire=> lifeSteal;
     [Header("Visual")]
     [SerializeField] private GameObject visualEffectPrefab;
     public GameObject VisualEffectPrefab => visualEffectPrefab;

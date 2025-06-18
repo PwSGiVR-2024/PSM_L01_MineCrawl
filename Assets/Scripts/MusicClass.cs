@@ -14,6 +14,9 @@ public class MusicClass : MonoBehaviour
     public static event Action<float, bool> OnVolumeMuteChanged;
 
     private Coroutine fadeCoroutine;
+    [SerializeField] private AudioClip mainMenuClip;
+    [SerializeField] private AudioClip battleClip;
+    [SerializeField] private AudioClip explorationClip;
 
     private void Awake()
     {
@@ -32,6 +35,15 @@ public class MusicClass : MonoBehaviour
         _audioSource.mute = PlayerPrefs.GetInt(MuteKey, 0) == 1;
 
         OnVolumeMuteChanged?.Invoke(_audioSource.volume, _audioSource.mute);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+    }
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
     }
 
     public void MuteMusic()
@@ -78,9 +90,47 @@ public class MusicClass : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Wyślij obecny stan do nowych listenerów
         OnVolumeMuteChanged?.Invoke(_audioSource.volume, _audioSource.mute);
+        SwitchMusicForScene(scene.name);
     }
+    private void SwitchMusicForScene(string sceneName)
+    {
+        AudioClip selectedClip = null;
+
+        switch (sceneName)
+        {
+            case "Main menu":
+                selectedClip = mainMenuClip;
+                break;
+            case "BattleScene":
+                selectedClip = battleClip;
+                break;
+            case "tileMapTests":
+                selectedClip = explorationClip;
+                break;
+            default:
+                return; // nie zmieniaj muzyki
+        }
+
+        if (selectedClip != null && _audioSource.clip != selectedClip)
+        {
+            StartCoroutine(SwitchMusicWithFade(selectedClip, 1f));
+        }
+    }
+    private IEnumerator SwitchMusicWithFade(AudioClip newClip, float fadeDuration)
+    {
+        float originalVolume = _audioSource.volume;
+
+        // Fade out
+        yield return FadeVolume(originalVolume, 0f, fadeDuration / 2f);
+
+        _audioSource.clip = newClip;
+        _audioSource.Play();
+
+        // Fade in
+        yield return FadeVolume(0f, originalVolume, fadeDuration / 2f);
+    }
+
     private IEnumerator FadeVolume(float from, float to, float duration, Action onComplete = null)
     {
         float elapsed = 0f;
