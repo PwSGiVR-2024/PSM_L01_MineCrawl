@@ -19,13 +19,13 @@ MonoBehaviour:
     CurrentHP: 0
     Strength: 5
     Perception: 5
-    Endurance: 5
+    Endurance: 7
     Charisma: 5
     Intelligence: 5
-    Agility: 5
+    Agility: 3
     Luck: 5
     Attack: 0
-    Defense: 0
+    Defense: 5
     Mana: 0
     MaxMana: 0
   startingSkills:

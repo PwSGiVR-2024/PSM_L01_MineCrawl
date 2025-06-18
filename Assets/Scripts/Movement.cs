@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
     private float holdDelay = 0.15f;
     private float holdTimer = 0f;
 
-    private float encounterChance = 0.03f;
+    private float encounterChance = 0.3f; //0.03f
 
     private void Start()
     {
@@ -180,7 +180,7 @@ public class Movement : MonoBehaviour
             BattleTransferData.playerPosition = transform.position;
             BattleTransferData.cameFromBattle = true;
 
-            LogManager.Instance.Log($"A wild {enemyTemplate.characterName} appears!");
+            LogManager.Instance.Log($"A wild {enemyTemplate.characterName} lvl: {enemyTemplate.baseLevel} appears!");
             SceneManager.LoadScene("BattleScene");
         }
 

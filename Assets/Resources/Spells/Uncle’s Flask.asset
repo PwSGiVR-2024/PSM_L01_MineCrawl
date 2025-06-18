@@ -28,3 +28,4 @@ MonoBehaviour:
   lifeSteal: 0
   visualEffectPrefab: {fileID: 4332703377137002518, guid: cc46aac21c706e04ba4f8808ee6f3ca9, type: 3}
   particleEffectType: 2
+  scalingStat: 6

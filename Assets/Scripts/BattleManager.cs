@@ -32,6 +32,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Transform enemySpawnPoint;
     [SerializeField] private Button waitButton;
     [SerializeField] private GameObject blockerPanel;
+    private Queue<CharacterInstance> turnOrderQueue;
+    private CharacterInstance currentCharacter; // kto teraz wykonuje turę
 
     private CharacterInstance player;
     private CharacterInstance enemy;
@@ -51,7 +53,64 @@ public class BattleManager : MonoBehaviour
 
         if (hurtScreen != null)
             hurtScreen.color = new Color(1, 0, 0, 0);
+
+        InitializeTurnOrder();
+        StartCoroutine(ProcessNextTurn());
     }
+    void InitializeTurnOrder()
+    {
+        List<CharacterInstance> allCharacters = new List<CharacterInstance> { player, enemy };
+        // Sortuj malejąco po Agility
+        allCharacters.Sort((a, b) =>
+            b.Stats.GetStatValue(CharacterStats.StatType.Agility).CompareTo(
+            a.Stats.GetStatValue(CharacterStats.StatType.Agility)));
+
+        turnOrderQueue = new Queue<CharacterInstance>(allCharacters);
+    }
+    private IEnumerator ProcessNextTurn()
+    {
+        // Czekaj, jeśli trwa animacja
+        yield return new WaitUntil(() => !isAnimating);
+
+        if (turnOrderQueue.Count == 0)
+            InitializeTurnOrder();
+
+        currentCharacter = turnOrderQueue.Dequeue();
+
+        if (currentCharacter == player)
+        {
+            // Aktywuj UI, aby gracz mógł wykonać akcję
+            blockerPanel.SetActive(false);
+            waitButton.interactable = true;
+            LogManager.Instance.Log("Your turn.");
+            // Czekaj aż gracz kliknie przycisk albo wykona akcję (w metodach PlayerAttack i WaitTurn kontynuujemy)
+        }
+        else
+        {
+            // Tura przeciwnika - blokuj UI i wykonaj akcję AI
+            blockerPanel.SetActive(true);
+            waitButton.interactable = false;
+            LogManager.Instance.Log("Enemy turn.");
+            yield return StartCoroutine(EnemyTurn());
+
+            if (enemy.Stats.IsDead)
+            {
+                StartCoroutine(EndBattle(true));
+                yield break;
+            }
+
+            if (player.Stats.IsDead)
+            {
+                StartCoroutine(EndBattle(false));
+                yield break;
+            }
+
+            // Po zakończeniu tury przeciwnika dodaj go z powrotem do kolejki
+            turnOrderQueue.Enqueue(currentCharacter);
+            StartCoroutine(ProcessNextTurn());
+        }
+    }
+
 
     void SetAnimationLock(bool state)
     {
@@ -201,13 +260,10 @@ public class BattleManager : MonoBehaviour
 
         Transform fromTransform = playerSpawnPoint;
         Transform toTransform = skill.selfUse ? playerSpawnPoint : enemySpawnPoint;
-
+        player.UseSkill(skill, target);
         yield return StartCoroutine(PlaySkillEffect(skill.VisualEffectPrefab, fromTransform, toTransform, skill.EffectType));
 
-        player.UseSkill(skill, target);
         RegenerateBasic(player);
-
-        LogManager.Instance.Log($"Player used {skill.SkillName}.");
 
         Color flashColor = skill.Damage <= 0 ? Color.green : Color.red;
         Transform flashTarget = skill.selfUse ? playerSpawnPoint : enemySpawnPoint;
@@ -217,16 +273,16 @@ public class BattleManager : MonoBehaviour
 
         if (!skill.selfUse && enemy.Stats.IsDead)
         {
-            StartCoroutine(EndBattle(true)); // lub false
-
-        }
-        else
-        {
-            yield return StartCoroutine(EnemyTurn());
+            StartCoroutine(EndBattle(true));
+            yield break;
         }
 
         SetAnimationLock(false);
+
+        turnOrderQueue.Enqueue(player);
+        StartCoroutine(ProcessNextTurn());
     }
+
 
     public void WaitTurn()
     {
@@ -241,10 +297,13 @@ public class BattleManager : MonoBehaviour
 
         LogManager.Instance.Log($"You wait... +{hpRegen} HP, +{manaRegen} Mana");
         UpdateUI();
-        StartCoroutine(EnemyTurn());
 
         SetAnimationLock(false);
+
+        turnOrderQueue.Enqueue(player);
+        StartCoroutine(ProcessNextTurn());
     }
+
 
     IEnumerator EnemyTurn()
     {
@@ -304,13 +363,13 @@ public class BattleManager : MonoBehaviour
             ICharacter target = chosenSkill.selfUse ? enemy : player;
             Transform fromTransform = enemySpawnPoint;
             Transform toTransform = chosenSkill.selfUse ? enemySpawnPoint : playerSpawnPoint;
-
+            enemy.UseSkill(chosenSkill, target);
             yield return StartCoroutine(PlaySkillEffect(chosenSkill.VisualEffectPrefab, fromTransform, toTransform, chosenSkill.EffectType));
 
-            enemy.UseSkill(chosenSkill, target);
+           
             RegenerateBasic(enemy);
 
-            LogManager.Instance.Log($"Enemy used {chosenSkill.SkillName}.");
+            //LogManager.Instance.Log($"Enemy used {chosenSkill.SkillName}.");
 
             Color flashColor = chosenSkill.Damage < 0 ? Color.green : Color.red;
             Transform flashTarget = chosenSkill.selfUse ? enemySpawnPoint : playerSpawnPoint;

@@ -2809,11 +2809,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225909601597565855, guid: 27891b6c82612c24f8032d2071d15649, type: 3}
       propertyPath: m_fontSize
-      value: 30
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 4225909601597565855, guid: 27891b6c82612c24f8032d2071d15649, type: 3}
       propertyPath: m_fontSizeBase
-      value: 30
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 4225909601597565855, guid: 27891b6c82612c24f8032d2071d15649, type: 3}
       propertyPath: m_enableAutoSizing

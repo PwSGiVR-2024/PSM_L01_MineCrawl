@@ -26,3 +26,5 @@ MonoBehaviour:
   manaRegenAmount: 0
   lifeSteal: 0
   visualEffectPrefab: {fileID: 0}
+  particleEffectType: 0
+  scalingStat: 1

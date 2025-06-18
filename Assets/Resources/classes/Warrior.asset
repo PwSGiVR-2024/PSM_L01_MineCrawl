@@ -21,7 +21,7 @@ MonoBehaviour:
     Endurance: 7
     Charisma: 5
     Intelligence: 5
-    Agility: 5
+    Agility: 1
     Luck: 7
     Attack: 10
     Defense: 20

@@ -29,4 +29,3 @@ MonoBehaviour:
     MaxMana: 0
   startingSkills:
   - {fileID: 11400000, guid: 1ff3822602fa56840b177354e8f55a90, type: 2}
-  - {fileID: 11400000, guid: 1ff3822602fa56840b177354e8f55a90, type: 2}

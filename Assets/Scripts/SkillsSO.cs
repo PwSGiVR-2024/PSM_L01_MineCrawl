@@ -7,6 +7,19 @@ public enum SkillCategory
     Magic,
     Item
 }
+public enum ScalingStatType
+{
+    None,
+    Strength,
+    Intelligence,
+    Endurance,
+    Agility,
+    Luck,
+    Charisma,
+    Perception,
+    Attack,
+    Defense
+}
 
 public enum SkillEffectType
 {
@@ -49,7 +62,13 @@ public class SkillsSO : ScriptableObject, ISkill
     [Header("Visual")]
     [SerializeField] private GameObject visualEffectPrefab;
     public GameObject VisualEffectPrefab => visualEffectPrefab;
-    [SerializeField] private ParticleEffectType particleEffectType;
+    [SerializeField] private ParticleEffectType particleEffectType; 
+    [Header("Scaling")]
+    [SerializeField] private ScalingStatType scalingStat = ScalingStatType.None;
+
+    public ScalingStatType ScalingStat => scalingStat;
+
+
     public ParticleEffectType EffectType => particleEffectType;
     public string SkillName => skillName;
     public string Description => description;
@@ -65,12 +84,21 @@ public class SkillsSO : ScriptableObject, ISkill
         LogManager.Instance.Log($"{user.Name} uses {skillName} on {target.Name}.");
 
         if (manaCost > 0)
-            LogManager.Instance.Log($"{user.Name} spends {manaCost} mana.");
-        if (hpCost > 0)
-            LogManager.Instance.Log($"{user.Name} sacrifices {hpCost} HP.");
+        {
+            user.SpentMana(manaCost);
+            LogManager.Instance.Log($"{user.Name} spends {manaCost} mana. MP: {user.Stats.GetStatValue(CharacterStats.StatType.Mana)}/{user.Stats.GetStatValue(CharacterStats.StatType.MaxMana)}");
+        }
+        else if (hpCost > 0)
+        {
+            user.TakeDamage(hpCost);
+            LogManager.Instance.Log($"{user.Name} sacrifices {hpCost} HP. HP:{user.Stats.GetStatValue(CharacterStats.StatType.CurrentHP)}/{user.Stats.GetStatValue(CharacterStats.StatType.MaxHP)}");
+        }
+        else
+        {
+            user.SpentMana(manaCost);
+            user.TakeDamage(hpCost);
+        }
 
-        user.SpentMana(manaCost);
-        user.TakeDamage(hpCost);
 
         // Efekty najpierw, potem logi o efektach
         foreach (var effect in effects)
@@ -78,40 +106,71 @@ public class SkillsSO : ScriptableObject, ISkill
             switch (effect)
             {
                 case SkillEffectType.Damage:
-                    target.TakeDamage(damage);
-                    LogManager.Instance.Log($"{target.Name} takes {damage} {damagetype} damage.");
+                    
+                    int targetDefense = target.Stats.GetStatValue(CharacterStats.StatType.Defense);
+                    int baseAttack = user.Stats.GetStatValue(CharacterStats.StatType.Attack) + damage;
+                    int scalingBonus = Mathf.RoundToInt(baseAttack * (baseAttack/100));
+                    int finalDamage = Mathf.Max((scalingBonus + baseAttack) - targetDefense, 1);
+
+
+                    target.TakeDamage(finalDamage);
+                    LogManager.Instance.Log($"{target.Name} takes {finalDamage} damage. (Base: {damage}, Bonus: {scalingBonus}, Reduced: {targetDefense})");
+                    if (lifeSteal > 0 && effects.Contains(SkillEffectType.Damage))
+                    {
+                        int stolen = LifeSteal(finalDamage, lifeSteal);
+                        user.TakeDamage(-stolen);
+                        LogManager.Instance.Log($"{user.Name} steals {stolen} HP from {target.Name}.");
+                    }
                     break;
 
                 case SkillEffectType.Heal:
-                    target.TakeDamage(-healingAmount);
-                    LogManager.Instance.Log($"{target.Name} is healed for {healingAmount} HP.");
+                    int healBonus = Mathf.RoundToInt(GetScalingStatValue(user.Stats) * (healingAmount/100));
+                    int totalHeal = healingAmount + healBonus;
+
+                    target.TakeDamage(-totalHeal);
+                    LogManager.Instance.Log($"{target.Name} is healed for {totalHeal} HP. (Base: {healingAmount}, Bonus: {healBonus})");
                     break;
 
                 case SkillEffectType.ManaRegen:
-                    target.Stats.ChangeStat(CharacterStats.StatType.Mana, manaRegenAmount);
-                    LogManager.Instance.Log($"{target.Name} regenerates {manaRegenAmount} mana.");
+                    int scalingManaBonus = Mathf.RoundToInt(GetScalingStatValue(user.Stats) * (manaRegenAmount/100));
+                    int totalManaRegen = manaRegenAmount + scalingManaBonus;
+
+                    target.Stats.ChangeStat(CharacterStats.StatType.Mana, totalManaRegen);
+                    LogManager.Instance.Log($"{target.Name} regenerates {totalManaRegen} mana. (Base: {manaRegenAmount}, Bonus: {scalingManaBonus})");
                     break;
 
                 case SkillEffectType.Buff:
-                    LogManager.Instance.Log($"{target.Name} is empowered by a buff. (Effect TBD)");
+                    LogManager.Instance.Log($"{target.Name} is empowered by a buff. (Effect TBD)"); //WIP
                     break;
 
                 case SkillEffectType.Debuff:
-                    LogManager.Instance.Log($"{target.Name} suffers a debuff. (Effect TBD)");
+                    LogManager.Instance.Log($"{target.Name} suffers a debuff. (Effect TBD)"); //WIP
                     break;
             }
         }
 
-        if (lifeSteal > 0 && effects.Contains(SkillEffectType.Damage))
-        {
-            int stolen = LifeSteal(damage, lifeSteal);
-            user.TakeDamage(-stolen);
-            LogManager.Instance.Log($"{user.Name} steals {stolen} HP from {target.Name}.");
-        }
+
     }
 
     public int LifeSteal(int baseDamage, float percent)
     {
         return Mathf.CeilToInt(baseDamage * percent);
     }
+    private int GetScalingStatValue(CharacterStats stats)
+    {
+        return scalingStat switch
+        {
+            ScalingStatType.Strength => stats.GetStatValue(CharacterStats.StatType.Strength),
+            ScalingStatType.Intelligence => stats.GetStatValue(CharacterStats.StatType.Intelligence),
+            ScalingStatType.Endurance => stats.GetStatValue(CharacterStats.StatType.Endurance),
+            ScalingStatType.Agility => stats.GetStatValue(CharacterStats.StatType.Agility),
+            ScalingStatType.Luck => stats.GetStatValue(CharacterStats.StatType.Luck),
+            ScalingStatType.Charisma => stats.GetStatValue(CharacterStats.StatType.Charisma),
+            ScalingStatType.Perception => stats.GetStatValue(CharacterStats.StatType.Perception),
+            ScalingStatType.Attack => stats.GetStatValue(CharacterStats.StatType.Attack),
+            ScalingStatType.Defense => stats.GetStatValue(CharacterStats.StatType.Defense),
+            _ => 0
+        };
+    }
+
 }

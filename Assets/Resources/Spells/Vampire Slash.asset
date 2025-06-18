@@ -20,9 +20,11 @@ MonoBehaviour:
   useOnSelf: 0
   manaCost: 5
   hpCost: 0
-  effects: 0000000001000000
+  effects: 00000000
   damage: 10
   healingAmount: 0
   manaRegenAmount: 0
   lifeSteal: 0.3
   visualEffectPrefab: {fileID: 0}
+  particleEffectType: 0
+  scalingStat: 4
