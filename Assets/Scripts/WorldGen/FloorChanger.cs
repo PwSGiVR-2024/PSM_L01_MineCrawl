@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.Tilemaps;
 
 
@@ -15,8 +16,8 @@ public class FloorChanger : CreateRoom
     private Vector2 altarSpawnPoint;
     private List<MapData> floors;
     private int currentFloor;
-    private int highestFloor;
-
+    private static int highestFloor;
+    public static int GetHighestFloor => highestFloor;
     private void Start()
     {
         floorRenderer = GetComponent<FloorRenderer>();
@@ -104,7 +105,8 @@ public class FloorChanger : CreateRoom
             mapData = floors[floorNumber];
             currentFloor = floorNumber;
         }
-
+        LogManager.Instance.Log($"Player reached floor {currentFloor}.");
+        LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
         // Load tile palettes
         tilePallete = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
         Array.Resize(ref tilePallete, 32);

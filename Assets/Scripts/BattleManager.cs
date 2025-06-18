@@ -41,6 +41,7 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
+        SetAnimationLock(true);
         player = BattleTransferData.playerInstance;
         enemy = BattleTransferData.enemyInstance;
         blockerPanel.SetActive(false);
@@ -69,8 +70,9 @@ public class BattleManager : MonoBehaviour
     }
     private IEnumerator ProcessNextTurn()
     {
+        SetAnimationLock(true);
         // Czekaj, jeśli trwa animacja
-        yield return new WaitUntil(() => !isAnimating);
+        
 
         if (turnOrderQueue.Count == 0)
             InitializeTurnOrder();
@@ -84,6 +86,7 @@ public class BattleManager : MonoBehaviour
             waitButton.interactable = true;
             LogManager.Instance.Log("Your turn.");
             // Czekaj aż gracz kliknie przycisk albo wykona akcję (w metodach PlayerAttack i WaitTurn kontynuujemy)
+            SetAnimationLock(false);
         }
         else
         {
@@ -185,7 +188,7 @@ public class BattleManager : MonoBehaviour
     {
         if (effectPrefab == null) yield break;
 
-        SetAnimationLock(true);
+        ;
         GameObject effectInstance;
 
         switch (effectType)
@@ -236,7 +239,7 @@ public class BattleManager : MonoBehaviour
         }
 
         Destroy(effectInstance);
-        SetAnimationLock(false);
+        ;
     }
 
     public void PlayerAttack(SkillsSO skill)
@@ -252,24 +255,28 @@ public class BattleManager : MonoBehaviour
 
         ICharacter target = skill.selfUse ? player : enemy;
         StartCoroutine(PerformPlayerAttack(skill, target));
+        SetAnimationLock(true); 
     }
 
     private IEnumerator PerformPlayerAttack(SkillsSO skill, ICharacter target)
     {
-        SetAnimationLock(true);
+        ;
 
         Transform fromTransform = playerSpawnPoint;
         Transform toTransform = skill.selfUse ? playerSpawnPoint : enemySpawnPoint;
         player.UseSkill(skill, target);
+
+
+        UpdateUI();
+
         yield return StartCoroutine(PlaySkillEffect(skill.VisualEffectPrefab, fromTransform, toTransform, skill.EffectType));
-
-        RegenerateBasic(player);
-
         Color flashColor = skill.Damage <= 0 ? Color.green : Color.red;
         Transform flashTarget = skill.selfUse ? playerSpawnPoint : enemySpawnPoint;
-
         yield return StartCoroutine(FlashDamage(flashTarget, flashColor));
-        UpdateUI();
+        RegenerateBasic(player);
+
+
+
 
         if (!skill.selfUse && enemy.Stats.IsDead)
         {
@@ -277,7 +284,7 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
-        SetAnimationLock(false);
+        ;
 
         turnOrderQueue.Enqueue(player);
         StartCoroutine(ProcessNextTurn());
@@ -287,7 +294,7 @@ public class BattleManager : MonoBehaviour
     public void WaitTurn()
     {
         if (isAnimating) return;
-        SetAnimationLock(true);
+        ;
 
         int hpRegen = Mathf.CeilToInt(player.Stats.GetStatValue(CharacterStats.StatType.MaxHP) * 0.05f);
         int manaRegen = Mathf.CeilToInt(player.Stats.GetStatValue(CharacterStats.StatType.MaxMana) * 0.15f);
@@ -298,7 +305,7 @@ public class BattleManager : MonoBehaviour
         LogManager.Instance.Log($"You wait... +{hpRegen} HP, +{manaRegen} Mana");
         UpdateUI();
 
-        SetAnimationLock(false);
+        ;
 
         turnOrderQueue.Enqueue(player);
         StartCoroutine(ProcessNextTurn());
@@ -307,7 +314,7 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EnemyTurn()
     {
-        SetAnimationLock(true);
+        ;
         yield return new WaitForSeconds(0.8f);
 
         List<SkillsSO> usableSkills = new List<SkillsSO>();
@@ -444,6 +451,7 @@ public class BattleManager : MonoBehaviour
         {
             int expReward = 5 + 2 * 2; // przykładowa nagroda
             player.GainExp(expReward);
+            player.OnEnemyDefeated();
             SceneManager.LoadScene(BattleTransferData.previousSceneName);
         }
         else

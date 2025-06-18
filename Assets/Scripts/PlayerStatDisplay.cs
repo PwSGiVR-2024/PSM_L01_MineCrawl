@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class PlayerStatsDisplay : MonoBehaviour
 {
     public GameObject scrollView;
+    public GameObject Console;
     public Transform contentParent;
     public GameObject statTextPrefab;    // Prefab z TextMeshProUGUI
 
@@ -24,12 +25,14 @@ public class PlayerStatsDisplay : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
+            Console.SetActive(!Console.active);
             showSkillsInsteadOfStats = false;
             ToggleDisplay();
         }
 
         if (Input.GetKeyDown(KeyCode.K))
         {
+            Console.SetActive(!Console.active);
             showSkillsInsteadOfStats = true;
             ToggleDisplay();
         }
@@ -66,15 +69,15 @@ public class PlayerStatsDisplay : MonoBehaviour
         AddText($"Name: {player.Name}");
         AddText($"Level: {player.Level}");
         AddText($"EXP: {player.CurrentExp}/{player.GetExpForNextLevel()}");
-
+        AddText($"Race: {player.Race.name}");
+        AddText($"Class: {player.Class.name}");
         foreach (CharacterStats.StatType stat in System.Enum.GetValues(typeof(CharacterStats.StatType)))
         {
             int val = player.Stats.GetStatValue(stat);
             AddText($"{stat}: {val}");
         }
 
-        AddText($"Race: {player.Race.name}");
-        AddText($"Class: {player.Class.name}");
+
     }
 
     void ShowPlayerSkills()

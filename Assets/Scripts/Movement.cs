@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Movement : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
+        LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
         targetPosition = transform.position;
         if (PlayerCamera == null)
             PlayerCamera = Camera.main;

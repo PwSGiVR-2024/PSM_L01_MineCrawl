@@ -11,6 +11,8 @@ public class CharacterStats
     {
         MaxHP,
         CurrentHP,
+        Mana,
+        MaxMana,
         Strength,
         Perception,
         Endurance,
@@ -20,8 +22,7 @@ public class CharacterStats
         Luck,
         Attack,
         Defense,
-        Mana,
-        MaxMana
+
     }
     
     [SerializeField] private int MaxHP;

@@ -22,7 +22,8 @@ public class CharacterBuilder : MonoBehaviour
 {
     public TMP_Dropdown raceDropdown;
     public TMP_Dropdown classDropdown;
-    public CharacterCreationData characterDataTemplate;
+    private CharacterCreationData characterDataTemplate;
+
 
     public CharacterRaceSO[] availableRaces;
     public CharacterClassSO[] availableClasses;
@@ -34,8 +35,12 @@ public class CharacterBuilder : MonoBehaviour
     [SerializeField] bool Random = false;
     void Start()
     {
-        
-            (availableRaces, availableClasses) = CheckAvailable();
+        characterDataTemplate = Resources.Load<CharacterCreationData>("Spells/Player_1");
+        if (characterDataTemplate == null)
+        {
+            Debug.LogError("Nie udało się załadować CharacterCreationData z Resources.");
+        }
+        (availableRaces, availableClasses) = CheckAvailable();
         if (!Random)
         {
             SetupChoices();
@@ -52,6 +57,8 @@ public class CharacterBuilder : MonoBehaviour
     }
     public void RandomCharacter(CharacterRaceSO[] availableRaces, CharacterClassSO[] availableClasses)
     {
+        UnityEngine.Random.InitState(System.DateTime.Now.Millisecond + UnityEngine.Random.Range(0, 1000));
+
         if (availableRaces == null || availableRaces.Length == 0)
         {
             Debug.LogError("Brak dostępnych ras!");
@@ -64,16 +71,17 @@ public class CharacterBuilder : MonoBehaviour
             return;
         }
 
-        System.Random rand = new System.Random();
-        CharacterClassSO klasa = availableClasses[rand.Next(availableClasses.Length)];
-        CharacterRaceSO rasa = availableRaces[rand.Next(availableRaces.Length)];
+        CharacterClassSO klasa = availableClasses[UnityEngine.Random.Range(0, availableClasses.Length)];
+        CharacterRaceSO rasa = availableRaces[UnityEngine.Random.Range(0, availableRaces.Length)];
 
         Debug.Log("klasa: " + klasa.name + ", rasa: " + rasa.name);
 
         characterDataTemplate.selectedRace = rasa;
         characterDataTemplate.selectedClass = klasa;
         characterDataTemplate.name = "Andrzej";
-
+        LogManager.persistentLogLines.Clear();
+        LogManager.hasShownIntro = false;
+        CharacterInstance.ClearScore();
         UnityEngine.SceneManagement.SceneManager.LoadScene(2);
     }
 
@@ -92,7 +100,8 @@ public class CharacterBuilder : MonoBehaviour
 
         characterDataTemplate.selectedRace = selectedRace;
         characterDataTemplate.selectedClass = selectedClass;
-
+        LogManager.persistentLogLines.Clear();
+        LogManager.hasShownIntro = false;
         UnityEngine.SceneManagement.SceneManager.LoadScene(2); // przejdź do gry
     }
 

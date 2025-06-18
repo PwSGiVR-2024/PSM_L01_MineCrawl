@@ -106,16 +106,17 @@ public class SkillsSO : ScriptableObject, ISkill
             switch (effect)
             {
                 case SkillEffectType.Damage:
-                    
                     int targetDefense = target.Stats.GetStatValue(CharacterStats.StatType.Defense);
-                    int baseAttack = user.Stats.GetStatValue(CharacterStats.StatType.Attack) + damage;
-                    int scalingBonus = Mathf.RoundToInt(baseAttack * (baseAttack/100));
-                    int finalDamage = Mathf.Max((scalingBonus + baseAttack) - targetDefense, 1);
-
+                    int userAtk = user.Stats.GetStatValue(CharacterStats.StatType.Attack);
+                    int baseAttack = userAtk + damage;
+                    int scalingBonus = Mathf.RoundToInt(baseAttack * (baseAttack / 100f));
+                    int finalDamage = Mathf.Max(baseAttack + scalingBonus - targetDefense, 1);
 
                     target.TakeDamage(finalDamage);
-                    LogManager.Instance.Log($"{target.Name} takes {finalDamage} damage. (Base: {damage}, Bonus: {scalingBonus}, Reduced: {targetDefense})");
-                    if (lifeSteal > 0 && effects.Contains(SkillEffectType.Damage))
+                    LogManager.Instance.Log($"{target.Name} takes {finalDamage} damage. (Skill: {damage}, ATK: {userAtk}, Bonus: {scalingBonus}, DEF: {targetDefense})");
+
+
+                    if (lifeSteal > 0)
                     {
                         int stolen = LifeSteal(finalDamage, lifeSteal);
                         user.TakeDamage(-stolen);
@@ -124,7 +125,8 @@ public class SkillsSO : ScriptableObject, ISkill
                     break;
 
                 case SkillEffectType.Heal:
-                    int healBonus = Mathf.RoundToInt(GetScalingStatValue(user.Stats) * (healingAmount/100));
+                    int healStat = GetScalingStatValue(user.Stats);
+                    int healBonus = Mathf.RoundToInt(healStat * (healingAmount / 100f));
                     int totalHeal = healingAmount + healBonus;
 
                     target.TakeDamage(-totalHeal);
@@ -132,7 +134,8 @@ public class SkillsSO : ScriptableObject, ISkill
                     break;
 
                 case SkillEffectType.ManaRegen:
-                    int scalingManaBonus = Mathf.RoundToInt(GetScalingStatValue(user.Stats) * (manaRegenAmount/100));
+                    int manaStat = GetScalingStatValue(user.Stats);
+                    int scalingManaBonus = Mathf.RoundToInt(manaStat * (manaRegenAmount / 100f));
                     int totalManaRegen = manaRegenAmount + scalingManaBonus;
 
                     target.Stats.ChangeStat(CharacterStats.StatType.Mana, totalManaRegen);
@@ -140,18 +143,26 @@ public class SkillsSO : ScriptableObject, ISkill
                     break;
 
                 case SkillEffectType.Buff:
-                    LogManager.Instance.Log($"{target.Name} is empowered by a buff. (Effect TBD)"); //WIP
+                    ApplyBuff(target);
                     break;
 
                 case SkillEffectType.Debuff:
-                    LogManager.Instance.Log($"{target.Name} suffers a debuff. (Effect TBD)"); //WIP
+                    ApplyDebuff(target);
                     break;
             }
         }
 
 
     }
+    private void ApplyBuff(ICharacter target)
+    {
+        LogManager.Instance.Log($"{target.Name} is empowered by a buff. (Effect TBD)");
+    }
 
+    private void ApplyDebuff(ICharacter target)
+    {
+        LogManager.Instance.Log($"{target.Name} suffers a debuff. (Effect TBD)");
+    }
     public int LifeSteal(int baseDamage, float percent)
     {
         return Mathf.CeilToInt(baseDamage * percent);

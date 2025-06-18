@@ -1,4 +1,6 @@
 // CharacterInstance.cs
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterInstance : ICharacter
@@ -13,8 +15,8 @@ public class CharacterInstance : ICharacter
     private int level;
     private int currentExp;
     private CharacterStats stats;
-    int currentFloor;
-    int enemiesDefeated;
+    public static int currentHighestFloor;
+    public static int enemiesDefeated;
     private int baseExpRequired = 100;
     private float expMultiplier = 1.5f;
 
@@ -29,24 +31,31 @@ public class CharacterInstance : ICharacter
 
         InitializeStats();
     }
-    public int Score => CalculateScore();
+    static public int Score => CalculateScore();
 
-    private int CalculateScore()
+    private static int CalculateScore()
     {
         // Score roœnie liniowo z iloœci¹ pokonanych przeciwników i piêtrem.
-        return currentFloor * 100 + enemiesDefeated * 50;
+        return FloorChanger.GetHighestFloor * 100 + enemiesDefeated * 50;
+    }
+    public static void ClearScore()
+    {
+        enemiesDefeated = 0;
+        
     }
     public void OnEnemyDefeated()
     {
         enemiesDefeated++;
         LogManager.Instance.Log($"{Name} defeated an enemy! Total kills: {enemiesDefeated}");
+        
+        //LogManager.Instance.scoreText.text = $"Score: {Score}";
     }
     public void SetCurrentFloor(int floor)
     {
-        currentFloor = floor;
-        LogManager.Instance.Log($"{Name} reached floor {floor}.");
-    }
+        currentHighestFloor = floor;
 
+
+    }
     public void PrepareForBattle()
     {
         stats.ChangeStat(CharacterStats.StatType.CurrentHP, stats.GetStatValue(CharacterStats.StatType.MaxHP));
