@@ -14,19 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   className: Warrior
   baseStats:
-    MaxHP: 10
+    MaxHP: 120
     CurrentHP: 0
-    Strength: 7
-    Perception: 5
-    Endurance: 7
+    Strength: 15
+    Perception: 7
+    Endurance: 12
     Charisma: 5
     Intelligence: 5
-    Agility: 5
-    Luck: 7
-    Attack: 10
-    Defense: 20
+    Agility: 8
+    Luck: 6
+    Attack: 12
+    Defense: 10
     Mana: 0
-    MaxMana: 0
+    MaxMana: 30
   startingSkills:
   - {fileID: 11400000, guid: 35fdd754d104e8e4a9cf211c80685212, type: 2}
   - {fileID: 11400000, guid: e83089a6d18d15346aae62ba706703e5, type: 2}
+  - {fileID: 11400000, guid: c9257f71f0b4c424dbc66e0fadb3bd0b, type: 2}

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 797049d1ce65e4a4cb67017143602fdd, type: 3}
+  m_Name: IceSpike
+  m_EditorClassIdentifier: 
+  skillName: IceSpike
+  description: 'You conjure a sharp icicle that impales your target, dealing 22 Water
+    damage and slowing their movement.
+
+    Mana cost: 18'
+  category: 1
+  damagetype: 1
+  useOnSelf: 0
+  manaCost: 18
+  hpCost: 0
+  effects: 00000000
+  damage: 22
+  healingAmount: 0
+  manaRegenAmount: 0
+  lifeSteal: 0
+  visualEffectPrefab: {fileID: 1820680284854294, guid: 1a1c02facd51d87458dcaa3a761e2c03, type: 3}
+  audioEffect: {fileID: 8300000, guid: d11445e6a68834e4590b06de8709e92e, type: 3}
+  particleEffectType: 1
+  scalingStat: 2

@@ -3,7 +3,7 @@ using UnityEngine.Tilemaps;
 
 public class SceneRestoreManager : MonoBehaviour
 {
-    public CharacterCreationData characterDataTemplate;
+    private CharacterCreationData characterDataTemplate;
     public CharacterHolder characterPrefab;
     public Transform spawnPoint;
     [SerializeField] private Grid walk;
@@ -12,15 +12,22 @@ public class SceneRestoreManager : MonoBehaviour
     void Start()
     {
         CharacterHolder character = null;
+        if (BattleTransferData.characterData == null)
+        {
+            Debug.LogError("Brak danych postaci! Wróæ do ekranu tworzenia.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Main menu");
+            return;
+        }
 
         if (BattleTransferData.playerInstance == null &&
-            characterDataTemplate.selectedRace != null &&
-            characterDataTemplate.selectedClass != null)
+            BattleTransferData.characterData != null &&
+            BattleTransferData.characterData.selectedRace != null &&
+            BattleTransferData.characterData.selectedClass != null)
         {
             var so = ScriptableObject.CreateInstance<CharacterSO>();
-            so.race = characterDataTemplate.selectedRace;
-            so.characterClass = characterDataTemplate.selectedClass;
-            so.characterName = characterDataTemplate.name;
+            so.race = BattleTransferData.characterData.selectedRace;
+            so.characterClass = BattleTransferData.characterData.selectedClass;
+            so.characterName = BattleTransferData.characterData.name;
 
             CharacterInstance instance = new CharacterInstance(so);
             character = Instantiate(characterPrefab, spawnPoint.position, Quaternion.identity);
@@ -46,13 +53,13 @@ public class SceneRestoreManager : MonoBehaviour
                 {
                     GameObject defeated = GameObject.Find(BattleTransferData.defeatedEnemyID);
                     if (defeated != null) Destroy(defeated);
-                    BattleTransferData.defeatedEnemyID = null;
                 }
 
-                BattleTransferData.cameFromBattle = false;
+                BattleTransferData.ResetAfterBattle();
             }
         }
     }
+
 
     private void SetupMovementAndSprite(CharacterHolder character)
     {

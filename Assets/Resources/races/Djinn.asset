@@ -17,13 +17,13 @@ MonoBehaviour:
   baseStats:
     MaxHP: 0
     CurrentHP: 0
-    Strength: 5
-    Perception: 5
-    Endurance: 5
-    Charisma: 5
-    Intelligence: 5
-    Agility: 5
-    Luck: 5
+    Strength: 0
+    Perception: 0
+    Endurance: 0
+    Charisma: 0
+    Intelligence: 2
+    Agility: 1
+    Luck: 0
     Attack: 0
     Defense: 0
     Mana: 0

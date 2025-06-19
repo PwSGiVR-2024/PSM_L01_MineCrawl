@@ -1,32 +1,58 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerStatsDisplay : MonoBehaviour
 {
-    public GameObject scrollView;        // ca³y ScrollView (do w³¹czania/wy³¹czania)
-    public Transform contentParent;      // Content w ScrollView (tam bêd¹ teksty)
-    public GameObject statTextPrefab;    // prefab TMP Text
+    public GameObject scrollView;
+    public GameObject Console;
+    public Transform contentParent;
+    public GameObject statTextPrefab;    // Prefab z TextMeshProUGUI
 
-    public CharacterHolder holder;     // twoja instancja gracza
-    public CharacterInstance player;
+    public CharacterHolder holder;
+    private CharacterInstance player;
+
+    private bool isVisible = false;
+    private bool showSkillsInsteadOfStats = false;
+
     private void Start()
     {
         player = holder.characterInstance;
     }
-    private bool isVisible = false;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            isVisible = !isVisible;
-            scrollView.SetActive(isVisible);
+            Console.SetActive(!Console.active);
+            showSkillsInsteadOfStats = false;
+            ToggleDisplay();
+        }
 
-            if (isVisible)
-                ShowPlayerStats();
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Console.SetActive(!Console.active);
+            showSkillsInsteadOfStats = true;
+            ToggleDisplay();
+        }
+    }
+
+    void ToggleDisplay()
+    {
+        isVisible = !isVisible;
+        scrollView.SetActive(isVisible);
+
+        if (isVisible)
+        {
+            if (showSkillsInsteadOfStats)
+                ShowPlayerSkills();
             else
-                ClearStats();
+                ShowPlayerStats();
+        }
+        else
+        {
+            ClearDisplay();
         }
     }
 
@@ -38,43 +64,53 @@ public class PlayerStatsDisplay : MonoBehaviour
             return;
         }
 
-        ClearStats();
+        ClearDisplay();
 
-        // Przyk³ad wypisywania nazw i wartoœci statów
-        AddStatText($"Name: {player.Name}");
-        AddStatText($"Level: {player.Level}");
-        AddStatText($"EXP: {player.CurrentExp}/{player.GetExpForNextLevel()}"); // jeœli masz publiczny dostêp lub metodê
-
-        var stats = player.Stats;
-
+        AddText($"Name: {player.Name}");
+        AddText($"Level: {player.Level}");
+        AddText($"EXP: {player.CurrentExp}/{player.GetExpForNextLevel()}");
+        AddText($"Race: {player.Race.name}");
+        AddText($"Class: {player.Class.name}");
         foreach (CharacterStats.StatType stat in System.Enum.GetValues(typeof(CharacterStats.StatType)))
         {
-            int val = stats.GetStatValue(stat);
-            AddStatText($"{stat}: {val}");
+            int val = player.Stats.GetStatValue(stat);
+            AddText($"{stat}: {val}");
         }
 
-        // Przyk³adowo mo¿esz te¿ wyœwietliæ rasê i klasê
-        AddStatText($"Race: {player.Race.name}");
-        AddStatText($"Class: {player.Class.name}");
+
     }
 
-    void AddStatText(string text)
+    void ShowPlayerSkills()
     {
-        Debug.Log("Adding stat: " + text);
+        if (player == null)
+        {
+            Debug.LogWarning("PlayerInstance is null!");
+            return;
+        }
+
+        ClearDisplay();
+
+        List<SkillsSO> skills = new();
+        if (player.Class != null) skills.AddRange(player.Class.startingSkills);
+        if (player.Race != null) skills.AddRange(player.Race.startingSkills);
+
+        foreach (var skill in skills)
+        {
+            AddText($"<b>{skill.SkillName}</b>\n<color=#FFF>{skill.Description}</color>");
+        }
+    }
+
+    void AddText(string text)
+    {
         GameObject go = Instantiate(statTextPrefab, contentParent);
         TMP_Text tmp = go.GetComponent<TMP_Text>();
         if (tmp != null)
             tmp.text = text;
-        else
-            Debug.LogWarning("Prefab statTextPrefab nie ma TMP_Text");
     }
 
-
-    void ClearStats()
+    void ClearDisplay()
     {
         foreach (Transform child in contentParent)
-        {
             Destroy(child.gameObject);
-        }
     }
 }

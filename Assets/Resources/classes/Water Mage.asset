@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 146e06d330df01745b173eea49dd9467, type: 3}
+  m_Name: Water Mage
+  m_EditorClassIdentifier: 
+  className: Water Mage
+  baseStats:
+    MaxHP: 85
+    CurrentHP: 0
+    Strength: 6
+    Perception: 12
+    Endurance: 7
+    Charisma: 0
+    Intelligence: 15
+    Agility: 8
+    Luck: 7
+    Attack: 8
+    Defense: 7
+    Mana: 0
+    MaxMana: 90
+  startingSkills:
+  - {fileID: 11400000, guid: 69798faa276c68f4aaece91df4ddc84d, type: 2}

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2914097950307962694}
   - component: {fileID: 2042435738551811042}
   - component: {fileID: 1120101654170644173}
+  - component: {fileID: 5803093461922012653}
   m_Layer: 5
   m_Name: Atak
   m_TagString: Untagged
@@ -121,6 +122,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5803093461922012653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2223207593423495735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8237e1b159a93b44b879e9b9c0e9dac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillTooltip: {fileID: 0}
+  skill: {fileID: 0}
 --- !u!1 &4948645081053156199
 GameObject:
   m_ObjectHideFlags: 0

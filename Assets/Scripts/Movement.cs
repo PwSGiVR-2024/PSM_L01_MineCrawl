@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Movement : MonoBehaviour
 {
@@ -21,10 +22,11 @@ public class Movement : MonoBehaviour
     private float holdDelay = 0.15f;
     private float holdTimer = 0f;
 
-    private float encounterChance = 0.03f;//0.03f
+    private float encounterChance = 0.3f; //0.03f
 
     private void Start()
     {
+        LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
         targetPosition = transform.position;
         if (PlayerCamera == null)
             PlayerCamera = Camera.main;
@@ -88,17 +90,17 @@ public class Movement : MonoBehaviour
         if (spriteRenderer != null && dir.x != 0)
             spriteRenderer.flipX = (dir.x < 0);
 
-        if (IsEnemyAtPosition(newPos, out GameObject enemy))
-        {
-            Debug.Log("Spotkano przeciwnika: " + enemy.name);
-            enemy.GetComponent<Enemy>().Battle();
-            return;
-        }
+        //if (IsEnemyAtPosition(newPos, out GameObject enemy))
+        //{
+        //    Debug.Log("Spotkano przeciwnika: " + enemy.name);
+        //    enemy.GetComponent<Enemy>().Battle();
+        //    return;
+        //}
 
         if (IsWalkable(newPos))
         {
             MoveTo(newPos);
-            TryTriggerRandomEncounter();  // <-- Tu jest wywo³anie funkcji
+            TryTriggerRandomEncounter();  // <-- Tu jest wywoÂ³anie funkcji
         }
     }
 
@@ -130,23 +132,23 @@ public class Movement : MonoBehaviour
         return tile != null;
     }
 
-    private bool IsEnemyAtPosition(Vector3Int gridPos, out GameObject enemy)
-    {
-        Vector3 worldPos = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0);
-        Collider2D[] hits = Physics2D.OverlapCircleAll(worldPos, 0.1f);
+    //private bool IsEnemyAtPosition(Vector3Int gridPos, out GameObject enemy)
+    //{
+    //    Vector3 worldPos = grid.CellToWorld(gridPos) + new Vector3(0.5f, 0.5f, 0);
+    //    Collider2D[] hits = Physics2D.OverlapCircleAll(worldPos, 0.1f);
 
-        foreach (var hit in hits)
-        {
-            if (hit.CompareTag("Enemy"))
-            {
-                enemy = hit.gameObject;
-                return true;
-            }
-        }
+    //    foreach (var hit in hits)
+    //    {
+    //        if (hit.CompareTag("Enemy"))
+    //        {
+    //            enemy = hit.gameObject;
+    //            return true;
+    //        }
+    //    }
 
-        enemy = null;
-        return false;
-    }
+    //    enemy = null;
+    //    return false;
+    //}
 
 
     private void TryTriggerRandomEncounter()
@@ -160,11 +162,11 @@ public class Movement : MonoBehaviour
             enemyTemplate.characterName = $"{race.raceName} {cls.className}";
             enemyTemplate.race = race;
             enemyTemplate.characterClass = cls;
-            enemyTemplate.baseLevel = 1;
+            int currentFloor = FloorChanger.GetHighestFloor;
+            enemyTemplate.baseLevel = Mathf.Max(1, currentFloor); // przynajmniej level 1
             enemyTemplate.baseStats = new CharacterStats();
 
             CharacterInstance enemyInstance = new CharacterInstance(enemyTemplate);
-
             BattleTransferData.enemyInstance = enemyInstance;
 
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -180,8 +182,11 @@ public class Movement : MonoBehaviour
             BattleTransferData.previousSceneName = SceneManager.GetActiveScene().name;
             BattleTransferData.playerPosition = transform.position;
             BattleTransferData.cameFromBattle = true;
+
+            LogManager.Instance.Log($"A wild {enemyTemplate.characterName} lvl: {enemyTemplate.baseLevel} appears!");
             SceneManager.LoadScene("BattleScene", LoadSceneMode.Additive);
             //SceneManager.LoadScene("BattleScene");
         }
+
     }
 }

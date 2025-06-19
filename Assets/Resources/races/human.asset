@@ -17,19 +17,19 @@ MonoBehaviour:
   baseStats:
     MaxHP: 0
     CurrentHP: 0
-    Strength: 5
-    Perception: 5
-    Endurance: 5
-    Charisma: 5
-    Intelligence: 5
-    Agility: 5
-    Luck: 5
-    Attack: 0
-    Defense: 0
+    Strength: 1
+    Perception: 1
+    Endurance: 1
+    Charisma: 1
+    Intelligence: 1
+    Agility: 1
+    Luck: 1
+    Attack: 1
+    Defense: 1
     Mana: 0
     MaxMana: 0
   startingSkills:
-  - {fileID: 11400000, guid: c9257f71f0b4c424dbc66e0fadb3bd0b, type: 2}
+  - {fileID: 11400000, guid: e83089a6d18d15346aae62ba706703e5, type: 2}
   - {fileID: 11400000, guid: 535606c8b04089e429eea81af5f3ad24, type: 2}
   - {fileID: 11400000, guid: bef63c957ee9e2c48a55507c3ce7a11c, type: 2}
   - {fileID: 11400000, guid: 76220f0ed3e532d408746ebdfb7dd75e, type: 2}

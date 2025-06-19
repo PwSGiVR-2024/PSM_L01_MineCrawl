@@ -8,6 +8,7 @@ public class RPGMenuManager : MonoBehaviour
 {
     [SerializeField] private BattleManager battleManager;
     private CharacterInstance player;
+    [SerializeField] private SkillTooltip skillTooltip;
 
     [Header("Menu Panels")]
     [SerializeField] private GameObject panelMainMenu;
@@ -54,9 +55,11 @@ public class RPGMenuManager : MonoBehaviour
 
     void UpdateSubMenu(List<SkillsSO> skills)
     {
+        // Usuń stare przyciski
         foreach (Transform child in subMenuButtonContainer)
             Destroy(child.gameObject);
 
+        // Dodaj przyciski umiejętności
         foreach (var skill in skills)
         {
             GameObject btnObj = Instantiate(skillButtonPrefab, subMenuButtonContainer);
@@ -69,9 +72,17 @@ public class RPGMenuManager : MonoBehaviour
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(() => UseSkill(skill));
             }
+
+            // Dodaj komponent obsługi tooltipu i przypisz skill + tooltip
+            SkillTooltipHandler tooltipHandler = btnObj.GetComponent<SkillTooltipHandler>();
+            if (tooltipHandler == null)
+                tooltipHandler = btnObj.AddComponent<SkillTooltipHandler>();
+
+            tooltipHandler.skill = skill;
+            tooltipHandler.skillTooltip = skillTooltip;
         }
 
-        // Przycisk Wróć
+        // Dodaj przycisk "← Wróć"
         GameObject backBtnObj = Instantiate(skillButtonPrefab, subMenuButtonContainer);
         TextMeshProUGUI backTxt = backBtnObj.GetComponentInChildren<TextMeshProUGUI>();
         if (backTxt != null) backTxt.text = "← Wróć";
@@ -83,6 +94,7 @@ public class RPGMenuManager : MonoBehaviour
             backBtn.onClick.AddListener(BackToMain);
         }
     }
+
 
     void UseSkill(SkillsSO skill)
     {

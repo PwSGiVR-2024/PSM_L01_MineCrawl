@@ -12,4 +12,6 @@ public interface ICharacter
     void SpentMana(int amount);
     void UseSkill(ISkill skill, ICharacter target);
     void GainExp(int amount);
+
+    void RestoreStat(CharacterStats.StatType statType, int amount);
 }
