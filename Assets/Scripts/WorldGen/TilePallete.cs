@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "TilePalette", menuName = "Scriptable Objects/TilePalette")]
-public class TilePalette : ScriptableObject
+public class TilePallete : ScriptableObject
 {
     public TileBase[] tiles;
     private void OnEnable()

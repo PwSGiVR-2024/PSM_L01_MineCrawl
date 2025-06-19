@@ -515,8 +515,10 @@ public class BattleManager : MonoBehaviour
         {
             int expReward = 5 + 2 * 2; // przykładowa nagroda
             player.GainExp(expReward);
+
             player.OnEnemyDefeated();
-            SceneManager.LoadScene(BattleTransferData.previousSceneName);
+            SceneManager.UnloadSceneAsync("BattleScene");
+            //SceneManager.LoadScene(BattleTransferData.previousSceneName);
         }
         else
         {

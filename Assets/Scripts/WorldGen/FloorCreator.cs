@@ -7,13 +7,29 @@ using System.IO;
 
 namespace Assets.Scripts.CreateRoom
 {
-    public class CreateRoom : MonoBehaviour
+    /*
+    Creates and manages data about floor in MapData struct.
+    Generates rooms, walls and paths* and saves them to 2D array as values.
+    They are then used by FloorRenderer to draw them on a tilemap.
+
+    *Paths are generated using PathFinding class.
+    
+
+    TODO:
+    - refactor
+    - fix spawning
+    - prefer unityengine.random
+    - player.transform.position = new Vector3(room.rootCoords.x, room.rootCoords.y, player.transform.position.z); insead of translate
+    - scriptable object instaed of LoadAll
+    */
+    public class FloorCreator : MonoBehaviour
     {
         public struct MapData
         {
             public int width;
             public int height;
             public int[][] mapArray;
+            public FinishAltar[] altars;//[0] - back, [1] - further
         }
 
         public struct Room
@@ -42,15 +58,14 @@ namespace Assets.Scripts.CreateRoom
         protected static List<Room> rooms;
         protected MapData mapData;
         protected FloorRenderer renderer;
+        protected Vector2Int lastPlayerPos;
+        protected GameObject player;
 
-        private Vector2Int lastPlayerPos;
-        private GameObject player;
 
         private void Start()
         {
             player = GameObject.FindGameObjectWithTag("Player");
             lastPlayerPos = new Vector2Int(-1, -1);
-            print("Start: " + lastPlayerPos);
             //CreateFloor();
         }
 
@@ -85,29 +100,34 @@ namespace Assets.Scripts.CreateRoom
         private void SpawnPlayer()
         {
             player = GameObject.FindGameObjectWithTag("Player");
-            print("X " + lastPlayerPos);
+            Debug.Log("X " + lastPlayerPos);
 
             if (lastPlayerPos.x <= 0 && lastPlayerPos.y <= 0)
             {
-                var room = GetRandomRoom();
-                var coordsValue = mapData.mapArray[room.rootCoords.x][room.rootCoords.y];
-                print("First: "+ coordsValue);
-                while (coordsValue >= 0)//wall
+                Room room;
+                int tileValue;
+
+                // Keep searching until we find a walkable tile
+                do
                 {
                     room = GetRandomRoom();
-                    coordsValue = mapData.mapArray[room.rootCoords.x][room.rootCoords.y];
+                    tileValue = mapData.mapArray[room.rootCoords.x][room.rootCoords.y];
                 }
-                print("Final: " + coordsValue);
-                player.transform.Translate(room.rootCoords.x, room.rootCoords.y, 0);
-                lastPlayerPos = new Vector2Int(room.rootCoords.x, room.rootCoords.y);
-                print("A " + lastPlayerPos);
+                while (tileValue >= 0); // skip wall/invalid tiles
+
+                Vector2Int spawnPos = room.rootCoords;
+                player.transform.position = new Vector3(spawnPos.x, spawnPos.y, player.transform.position.z);
+                lastPlayerPos = spawnPos;
+
+                Debug.Log("A " + lastPlayerPos);
             }
             else
             {
-                player.transform.Translate(lastPlayerPos.x, lastPlayerPos.y, 0);
-                print("B " + lastPlayerPos);
+                player.transform.position = new Vector3(lastPlayerPos.x, lastPlayerPos.y, player.transform.position.z);
+                Debug.Log("B " + lastPlayerPos);
             }
         }
+
 
         protected MapData GenerateArray(int width, int height)
         {
@@ -212,6 +232,7 @@ namespace Assets.Scripts.CreateRoom
                 tempMapData = PathFinding.RandomWalk(mapData, new Vector2Int(start.x, start.y), 500, rooms);//500 cigarettes default
             }
 
+
             return tempMapData;
         }
 
@@ -234,7 +255,7 @@ namespace Assets.Scripts.CreateRoom
                     string line = "";
                     for (int x = 0; x < cols; x++)
                     {
-                        line += mapData.mapArray[y][x].ToString().PadLeft(2, ' ') + " ";
+                        line += mapData.mapArray[x][y].ToString().PadLeft(2, ' ') + " ";
                     }
                     writer.WriteLine(line.Trim());
                 }

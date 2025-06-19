@@ -100,7 +100,7 @@ public class Movement : MonoBehaviour
         if (IsWalkable(newPos))
         {
             MoveTo(newPos);
-            TryTriggerRandomEncounter();  // <-- Tu jest wywo³anie funkcji
+            TryTriggerRandomEncounter();  // <-- Tu jest wywoÂ³anie funkcji
         }
     }
 
@@ -184,7 +184,8 @@ public class Movement : MonoBehaviour
             BattleTransferData.cameFromBattle = true;
 
             LogManager.Instance.Log($"A wild {enemyTemplate.characterName} lvl: {enemyTemplate.baseLevel} appears!");
-            SceneManager.LoadScene("BattleScene");
+            SceneManager.LoadScene("BattleScene", LoadSceneMode.Additive);
+            //SceneManager.LoadScene("BattleScene");
         }
 
     }
