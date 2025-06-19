@@ -26,7 +26,9 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
+        if (LogManager.Instance.scoreText) { 
         LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
+        }
         targetPosition = transform.position;
         if (PlayerCamera == null)
             PlayerCamera = Camera.main;

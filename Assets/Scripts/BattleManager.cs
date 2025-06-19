@@ -56,7 +56,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     private Queue<CharacterInstance> turnOrderQueue;
     private CharacterInstance currentCharacter; // kto teraz wykonuje turę
-
+    public TMP_Text logText;
+    public ScrollRect scrollRect;
     private CharacterInstance player;
     private CharacterInstance enemy;
     private bool isAnimating = false;
@@ -81,6 +82,7 @@ public class BattleManager : MonoBehaviour
     }
     void Start()
     {
+        LogManager.Instance.AttachUI(logText, scrollRect);
         SetAnimationLock(true);
         player = BattleTransferData.playerInstance;
         enemy = BattleTransferData.enemyInstance;
@@ -526,14 +528,16 @@ public class BattleManager : MonoBehaviour
         {
             int expReward = 5 + 2 * 2; // przykładowa nagroda
             player.GainExp(expReward);
-
             player.OnEnemyDefeated();
             ReactivateMapScene();
+            LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
             SceneManager.UnloadSceneAsync("BattleScene");
+            LogManager.Instance.AttachUI(LogHandle.logText, LogHandle.scrollRect);
             //SceneManager.LoadScene(BattleTransferData.previousSceneName);
         }
         else
         {
+            BattleTransferData.Clear();
             SceneManager.LoadScene("Main menu");
         }
     }

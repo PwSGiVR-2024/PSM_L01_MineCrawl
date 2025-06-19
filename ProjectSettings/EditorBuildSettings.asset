@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/dev/shiro/tileMapTests 2.unity
     guid: 35bbc6eeddec180429ae75a9b206baa7
+  - enabled: 1
+    path: Assets/Scenes/dev/jag/GlobalScene.unity
+    guid: 858ca58ef108ffd4e83e1e0d9c1f4d5f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

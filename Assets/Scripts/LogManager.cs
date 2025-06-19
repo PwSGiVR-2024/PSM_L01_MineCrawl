@@ -7,11 +7,14 @@ public class LogManager : MonoBehaviour
 {
     public static LogManager Instance;
     public TMP_Text scoreText;
+
     [SerializeField] private TMP_Text logText;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private int maxLines = 200;
+
     public static bool hasShownIntro = false;
     public static readonly Queue<string> persistentLogLines = new Queue<string>();
+
     private readonly string[] introMessages = new string[]
     {
         "Welcome to the world of pain (world of unfinished games and unfulfilled dev's hopes).",
@@ -22,6 +25,7 @@ public class LogManager : MonoBehaviour
         "Made with love, stress, and just a bit of spaghetti code.",
         "If you can read this, the UI didn't break. That's a good start."
     };
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -32,19 +36,21 @@ public class LogManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        if (!hasShownIntro)
-        {
-            Log(GetRandomIntro());
-            hasShownIntro = true;
-        }
-        UpdateLogText();
+
+
+
+        UpdateLogText(); // mo¿e byæ pusto na start
+    }
+    public void AttachScore(TMP_Text text)
+    {
+        scoreText = text;
     }
     public string GetRandomIntro()
     {
-
         int index = Random.Range(0, introMessages.Length);
         return introMessages[index];
     }
+
     public void Log(string message)
     {
         string timestamp = System.DateTime.Now.ToString("HH:mm:ss");
@@ -57,18 +63,31 @@ public class LogManager : MonoBehaviour
         UpdateLogText();
     }
 
-
     private void UpdateLogText()
     {
+
         if (logText != null)
         {
             logText.text = string.Join("\n", persistentLogLines);
 
             if (scrollRect != null)
             {
-                Canvas.ForceUpdateCanvases(); // wymusza layout UI
-                scrollRect.verticalNormalizedPosition = 0f; // scroll do do³u
+                Canvas.ForceUpdateCanvases();
+                scrollRect.verticalNormalizedPosition = 0f;
             }
         }
+    }
+
+    public void AttachUI(TMP_Text newLogText, ScrollRect newScrollRect)
+    {
+        logText = newLogText;
+        scrollRect = newScrollRect;
+        UpdateLogText(); // aktualizuj UI po podpiêciu
+    }
+
+    public void DetachUI()
+    {
+        logText = null;
+        scrollRect = null;
     }
 }
