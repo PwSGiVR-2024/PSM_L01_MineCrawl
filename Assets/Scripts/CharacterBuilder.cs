@@ -101,6 +101,7 @@ public class CharacterBuilder : MonoBehaviour
         LogManager.persistentLogLines.Clear();
         LogManager.hasShownIntro = false;
         CharacterInstance.ClearScore();
+        BattleTransferData.characterData = characterDataTemplate;
         UnityEngine.SceneManagement.SceneManager.LoadScene(2); // przejdź do gry
     }
 
