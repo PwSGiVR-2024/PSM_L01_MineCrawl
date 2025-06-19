@@ -14,6 +14,11 @@ public class Movement : MonoBehaviour
 
     [SerializeField] private CharacterRaceSO[] availableEnemyRaces;
     [SerializeField] private CharacterClassSO[] availableEnemyClasses;
+    [SerializeField] private float normalZoom = 5f;
+    [SerializeField] private float mapZoom = 25f;
+    [SerializeField] private float zoomSpeed = 5f;
+
+    private bool isMapView = false;
 
     private AudioSource audioSource;
     private Vector3 targetPosition;
@@ -22,7 +27,7 @@ public class Movement : MonoBehaviour
     private float holdDelay = 0.15f;
     private float holdTimer = 0f;
 
-    private float encounterChance = 0.0f; //0.03f
+    private float encounterChance = 0.03f; //0.03f
 
     private void Start()
     {
@@ -43,6 +48,12 @@ public class Movement : MonoBehaviour
         if (availableEnemyClasses == null || availableEnemyClasses.Length == 0)
             availableEnemyClasses = Resources.LoadAll<CharacterClassSO>("classes");
     }
+    public void ResetMovement()
+    {
+        isMoving = false;
+        targetPosition = transform.position;
+    }
+
     void DeactivateMapScene()
     {
         Scene mapScene = SceneManager.GetSceneByName("tileMapTests");
@@ -61,6 +72,12 @@ public class Movement : MonoBehaviour
             MoveToTarget();
             return;
         }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            isMapView = !isMapView;
+            Debug.Log("Map toggle: " + isMapView); 
+        }
+
 
         Vector2Int inputDir = Vector2Int.zero;
         if (Input.GetKey(KeyCode.W)) inputDir.y = 1;
@@ -91,7 +108,12 @@ public class Movement : MonoBehaviour
     {
         Vector3 cameraTarget = new Vector3(transform.position.x, transform.position.y, PlayerCamera.transform.position.z);
         PlayerCamera.transform.position = Vector3.Lerp(PlayerCamera.transform.position, cameraTarget, 10f * Time.deltaTime);
+
+        float targetZoom = isMapView ? mapZoom : normalZoom;
+        PlayerCamera.orthographicSize = Mathf.Lerp(PlayerCamera.orthographicSize, targetZoom, zoomSpeed * Time.deltaTime);
     }
+
+
 
     private void TryMove(Vector2Int dir)
     {

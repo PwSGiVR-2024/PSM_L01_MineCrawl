@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEditor.Rendering.Analytics;
 using UnityEngine;
 
 public enum SkillCategory

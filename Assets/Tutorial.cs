@@ -12,7 +12,6 @@ public class Tutorial : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
 
 

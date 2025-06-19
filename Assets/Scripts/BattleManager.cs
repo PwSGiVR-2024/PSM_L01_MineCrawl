@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEditor.Experimental.GraphView;
+
 
 public static class BattleTransferData
 {
@@ -526,10 +526,10 @@ public class BattleManager : MonoBehaviour
 
         if (playerWon)
         {
-            int expReward = 5 + 2 * 2; // przykładowa nagroda
-            player.GainExp(expReward);
-            player.OnEnemyDefeated();
             ReactivateMapScene();
+            int expReward = 100;// 5 + 2 * 2; // przykładowa nagroda
+            player.OnEnemyDefeated();
+            player.GainExp(expReward);
             LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
             SceneManager.UnloadSceneAsync("BattleScene");
             LogManager.Instance.AttachUI(LogHandle.logText, LogHandle.scrollRect);

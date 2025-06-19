@@ -50,6 +50,7 @@ public class FloorChanger : FloorCreator
 
         if (targetFloor < 1)
         {
+            LogManager.Instance.Log("Cannot go below 1st floor.");
             Debug.Log("Cannot go below 1st floor.");
             return;
         }
@@ -79,6 +80,7 @@ public class FloorChanger : FloorCreator
 
         if (LogManager.Instance != null)
         {
+            if(Tutorial.Instance)
             Tutorial.Instance.clear(); 
 
             LogManager.Instance.Log($"Player reached floor {currentFloor}.");

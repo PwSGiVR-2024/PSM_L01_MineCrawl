@@ -21,7 +21,7 @@ MonoBehaviour:
   manaCost: 25
   hpCost: 0
   effects: 00000000
-  damage: 20
+  damage: 202
   healingAmount: 0
   manaRegenAmount: 0
   lifeSteal: 0.5

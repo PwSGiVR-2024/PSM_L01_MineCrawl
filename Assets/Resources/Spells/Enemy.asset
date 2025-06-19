@@ -13,21 +13,20 @@ MonoBehaviour:
   m_Name: Enemy
   m_EditorClassIdentifier: 
   characterName: TestEnemy
-  level: 0
-  stats:
-    MaxHP: 100
-    CurrentHP: 100
-    Strength: 10
-    Perception: 10
-    Endurance: 10
-    Charisma: 10
-    Intelligence: 15
-    Agility: 10
-    Luck: 12
+  baseLevel: 1
+  baseStats:
+    MaxHP: 0
+    CurrentHP: 0
+    Strength: 0
+    Perception: 0
+    Endurance: 0
+    Charisma: 0
+    Intelligence: 0
+    Agility: 0
+    Luck: 0
     Attack: 0
     Defense: 0
-    Mana: 75
-    MaxMana: 75
+    Mana: 0
+    MaxMana: 0
   race: {fileID: 11400000, guid: a8b8004eeea931b48a33f6159fb5340b, type: 2}
   characterClass: {fileID: 11400000, guid: 0e9910edb4c2a3247a2517a31464f4a3, type: 2}
-  battleSprite: {fileID: 21300000, guid: 806db1cd0374d3f46ae133c59d4f4c44, type: 3}

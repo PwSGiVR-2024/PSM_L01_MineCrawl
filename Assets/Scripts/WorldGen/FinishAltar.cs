@@ -25,7 +25,7 @@ public class FinishAltar : FloorCreator
     private FloorChanger floorChanger;
     private bool playerInRange;
     private Vector2 coords;
-
+    private Movement movement;
     private void Start()
     {
         floorChanger = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorChanger>();
@@ -46,6 +46,7 @@ public class FinishAltar : FloorCreator
     {
         if (collision.CompareTag("Player"))
         {
+            movement = collision.GetComponent<Movement>();
             playerInRange = true;
         }
     }
@@ -88,6 +89,8 @@ public class FinishAltar : FloorCreator
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
+                if (movement != null)
+                    movement.ResetMovement();
                 floorChanger.ChangeFloor(this);
             }
             

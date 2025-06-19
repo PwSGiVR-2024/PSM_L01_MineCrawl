@@ -47,7 +47,7 @@ public class CharacterHolder : MonoBehaviour
     public static void LogStatGainWithDelay(CharacterStats.StatType stat, int bonus)
     {
         if (Instance != null)
-            Instance.StartCoroutine(Instance.DelayedLog($"[DEBUG] Added +{bonus} to {stat} due to floor scaling."));
+            Instance.StartCoroutine(Instance.DelayedLog($"Added +{bonus} to {stat}."));
     }
 
     private IEnumerator DelayedLog(string message)
