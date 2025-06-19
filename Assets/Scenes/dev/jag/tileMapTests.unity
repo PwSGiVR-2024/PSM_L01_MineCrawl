@@ -268,7 +268,7 @@ Transform:
   m_GameObject: {fileID: 180341065}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.4435277, y: 2.7261684, z: 0.23615715}
+  m_LocalPosition: {x: -18.24, y: -10.78, z: 0.23615715}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -310,7 +310,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4759, y: -1112}
+  m_AnchoredPosition: {x: -5291, y: -1064}
   m_SizeDelta: {x: 748.4, y: 675.1}
   m_Pivot: {x: -1.3428267, y: -0.041909695}
 --- !u!114 &273046577
@@ -863,7 +863,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4760, y: -2220}
+  m_AnchoredPosition: {x: -5291.9995, y: -2171.9998}
   m_SizeDelta: {x: 749.13, y: 677.69}
   m_Pivot: {x: -1.3428267, y: -0.041909695}
 --- !u!114 &803125551
@@ -5244,8 +5244,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 989.3, y: 0}
-  m_SizeDelta: {x: -1978.6, y: 0}
+  m_AnchoredPosition: {x: 675, y: 0}
+  m_SizeDelta: {x: -1350, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1730445285
 MonoBehaviour:
@@ -5269,9 +5269,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: "<-This is the Altar\r\nIt\u2019s your main objective \u2014 you need to
     find it to descend deeper into the dungeon.\r\nThe deeper you go, the higher
-    your score.\r\n\r\nThe altar can appear in two colors:\r\n\r\n    Blue \u2013
-    leads you back to the previous floor. (But why would you go backwards, really?)\r\n\r\n   
-    Green \u2013 leads you deeper into the dungeon. Fame and glory await!"
+    your score.\r\n\r\nThe altar can appear in two colors:\r\n\r\n  <-Blue \u2013
+    leads you back to the previous floor. (But why would you go backwards, really?)\r\n\r\n 
+    <-Green \u2013 leads you deeper into the dungeon. Fame and glory await!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8dd14044491a7c242a59bdecdc7b15a0, type: 2}
   m_sharedMaterial: {fileID: -6543829405662283325, guid: 8dd14044491a7c242a59bdecdc7b15a0, type: 2}
