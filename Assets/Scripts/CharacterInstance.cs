@@ -1,4 +1,5 @@
 // CharacterInstance.cs
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,13 +20,15 @@ public class CharacterInstance : ICharacter
     public static int enemiesDefeated;
     private int baseExpRequired = 100;
     private float expMultiplier = 1.5f;
+    public bool IsPlayerControlled { get; private set; }
+    public void SetAsPlayer() => IsPlayerControlled = true;
 
     public int CurrentExp => currentExp;
 
     public CharacterInstance(CharacterSO template)
     {
         characterTemplate = template;
-        level = template.baseLevel;
+        level = FloorChanger.GetHighestFloor;
         currentExp = 0;
         stats = new CharacterStats();
 
@@ -71,7 +74,7 @@ public class CharacterInstance : ICharacter
         stats.Add(characterTemplate.baseStats);
         // Skalowanie statystyk z poziomem
         // Skalowanie statystyk przeciwnika przez losowoœæ
-        if (characterTemplate != null && BattleTransferData.cameFromBattle)
+        if (characterTemplate != null)
         {
             int floor = FloorChanger.GetHighestFloor;
 
@@ -84,7 +87,10 @@ public class CharacterInstance : ICharacter
                 int bonus = Random.Range(1, 4) + floor / 2; // Skalowanie z piêtrem
                 stats.ChangeStat(randomStat, bonus);
 
-                LogManager.Instance.Log($"[DEBUG] Added +{bonus} to {randomStat} due to floor scaling.");
+                if (IsPlayerControlled && LogManager.Instance != null)
+                    LogManager.Instance.Log($"[DEBUG] Added +{bonus} to {randomStat} due to floor scaling.");
+
+
             }
         }
 
@@ -99,7 +105,6 @@ public class CharacterInstance : ICharacter
         stats.ChangeStat(CharacterStats.StatType.MaxMana, maxMana);
         stats.ChangeStat(CharacterStats.StatType.Mana, maxMana);
     }
-
     public void TakeDamage(int amount)
     {
         stats.ChangeStat(CharacterStats.StatType.CurrentHP, -amount);
@@ -169,7 +174,7 @@ public class CharacterInstance : ICharacter
     private void LevelUp()
     {
         LogManager.Instance.Log($"LEVEL UP! {Name} reached level {Level}!");
-        if (characterTemplate != null && BattleTransferData.cameFromBattle)
+        if (characterTemplate != null)
         {
             int floor = FloorChanger.GetHighestFloor;
 
@@ -182,7 +187,9 @@ public class CharacterInstance : ICharacter
                 int bonus = Random.Range(1, 4) + floor / 2; // Skalowanie z piêtrem
                 stats.ChangeStat(randomStat, bonus);
 
-                LogManager.Instance.Log($"[DEBUG] Added +{bonus} to {randomStat} due to floor scaling.");
+                if (IsPlayerControlled && LogManager.Instance != null)
+                    CharacterHolder.LogStatGainWithDelay( randomStat, bonus);
+
             }
         }
     }

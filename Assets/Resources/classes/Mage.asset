@@ -14,19 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   className: Mage
   baseStats:
-    MaxHP: 0
+    MaxHP: 80
     CurrentHP: 0
     Strength: 5
-    Perception: 5
-    Endurance: 5
-    Charisma: 5
-    Intelligence: 10
-    Agility: 5
+    Perception: 8
+    Endurance: 6
+    Charisma: 4
+    Intelligence: 15
+    Agility: 7
     Luck: 7
-    Attack: 0
-    Defense: 0
+    Attack: 8
+    Defense: 6
     Mana: 0
-    MaxMana: 0
+    MaxMana: 100
   startingSkills:
   - {fileID: 11400000, guid: 1ff3822602fa56840b177354e8f55a90, type: 2}
   - {fileID: 11400000, guid: 2f838e3522d5a13418c8f1e990e40683, type: 2}

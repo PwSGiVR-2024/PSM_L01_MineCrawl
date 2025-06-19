@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   className: Earth Mage
   baseStats:
-    MaxHP: 0
+    MaxHP: 110
     CurrentHP: 0
-    Strength: 5
-    Perception: 5
-    Endurance: 5
-    Charisma: 5
+    Strength: 12
+    Perception: 8
+    Endurance: 13
+    Charisma: 0
     Intelligence: 10
-    Agility: 5
-    Luck: 7
-    Attack: 0
-    Defense: 0
+    Agility: 7
+    Luck: 5
+    Attack: 11
+    Defense: 12
     Mana: 0
-    MaxMana: 0
+    MaxMana: 70
   startingSkills:
   - {fileID: 11400000, guid: 2f838e3522d5a13418c8f1e990e40683, type: 2}

@@ -826,6 +826,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterData: {fileID: 11400000, guid: 61a73930f32eac9448f1b54df81ea4dc, type: 2}
+  gracz: 0
 --- !u!82 &1605025727492296102
 AudioSource:
   m_ObjectHideFlags: 0
@@ -938,6 +939,7 @@ MonoBehaviour:
   pauseMenuUI: {fileID: 6370096450420057631}
   resumeButton: {fileID: 2013426887549837216}
   quitButton: {fileID: 7665318398747850831}
+  settingsWindow: {fileID: 1446182428867954291}
 --- !u!114 &747896990589084864
 MonoBehaviour:
   m_ObjectHideFlags: 0

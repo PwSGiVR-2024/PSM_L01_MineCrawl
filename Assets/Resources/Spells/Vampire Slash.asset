@@ -13,18 +13,19 @@ MonoBehaviour:
   m_Name: Vampire Slash
   m_EditorClassIdentifier: 
   skillName: Vampire slash
-  description: "A strike infused with dark magic \u2013 deals {damage} Dark damage
-    and restores 10% of the damage dealt as health.\r\nMana cost: 10"
+  description: "A strike infused with dark magic \u2013 deals 20 Dark damage and
+    restores 10% of the damage dealt as health.\r\nMana cost: 25"
   category: 0
   damagetype: 6
   useOnSelf: 0
-  manaCost: 5
+  manaCost: 25
   hpCost: 0
   effects: 00000000
-  damage: 10
+  damage: 20
   healingAmount: 0
   manaRegenAmount: 0
-  lifeSteal: 0.3
+  lifeSteal: 0.5
   visualEffectPrefab: {fileID: 0}
+  audioEffect: {fileID: 8300000, guid: 7d5b45200fbcfff4f98c3890b29df510, type: 3}
   particleEffectType: 0
   scalingStat: 4

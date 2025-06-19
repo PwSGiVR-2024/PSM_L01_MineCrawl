@@ -14,17 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: Swing
   description: A wide, sweeping attack with your weapon that hits the enemy in front
-    of you for 15 Physical damage. A reliable move with no mana cost.
+    of you for 20 Physical damage. A reliable move with no mana cost.
   category: 0
   damagetype: 6
   useOnSelf: 0
   manaCost: 0
   hpCost: 0
   effects: 00000000
-  damage: 15
+  damage: 20
   healingAmount: 0
   manaRegenAmount: 0
   lifeSteal: 0
   visualEffectPrefab: {fileID: 0}
+  audioEffect: {fileID: 8300000, guid: 7057e47e895e90f46b3429ac8d83e0dc, type: 3}
   particleEffectType: 0
   scalingStat: 1

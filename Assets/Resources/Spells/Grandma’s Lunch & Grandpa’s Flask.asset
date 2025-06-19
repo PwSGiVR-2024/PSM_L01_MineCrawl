@@ -26,5 +26,6 @@ MonoBehaviour:
   manaRegenAmount: 25
   lifeSteal: 0
   visualEffectPrefab: {fileID: 4332703377137002518, guid: cc46aac21c706e04ba4f8808ee6f3ca9, type: 3}
+  audioEffect: {fileID: 8300000, guid: 3927e7a76825ba749a37e9286e6e6902, type: 3}
   particleEffectType: 2
   scalingStat: 6

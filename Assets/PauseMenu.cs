@@ -7,7 +7,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseMenuUI;
     public Button resumeButton;
     public Button quitButton;
-
+    [SerializeField] GameObject settingsWindow;
     private bool isPaused = false;
 
     void Start()
@@ -23,10 +23,13 @@ public class PauseMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Debug.Log("ESC pressed!");
-            if (isPaused)
-                Resume();
-            else
-                Pause();
+            if (!settingsWindow.active)
+            {
+                if (isPaused)
+                    Resume();
+                else
+                    Pause();
+            }
         }
     }
 
@@ -51,12 +54,6 @@ public class PauseMenu : MonoBehaviour
 
         BattleTransferData.playerInstance = null;
 
-        //// Jeœli masz dostêp do CharacterCreationData i chcesz te¿ j¹ wyczyœciæ:
-        //var creationData = FindObjectOfType<CharacterBuilder>()?.characterDataTemplate;
-        //if (creationData != null)
-        //{
-        //    creationData.Clear();
-        //}
 
         SceneManager.LoadScene("Main menu");
     }

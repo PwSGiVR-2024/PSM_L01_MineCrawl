@@ -13,20 +13,21 @@ MonoBehaviour:
   m_Name: FireBall
   m_EditorClassIdentifier: 
   skillName: FireBall
-  description: 'You hurl a blazing fireball that explodes on impact, dealing 10 Fire
+  description: 'You hurl a blazing fireball that explodes on impact, dealing 20 Fire
     damage and slightly igniting nearby surroundings.
 
-    Mana cost: 10'
+    Mana cost: 20'
   category: 1
   damagetype: 0
   useOnSelf: 0
-  manaCost: 10
+  manaCost: 20
   hpCost: 0
   effects: 00000000
-  damage: 50
+  damage: 30
   healingAmount: 0
   manaRegenAmount: 0
   lifeSteal: 0
   visualEffectPrefab: {fileID: 1828176872806910, guid: 64891a0eb28db934898420d80ca07cb3, type: 3}
+  audioEffect: {fileID: 8300000, guid: 86d9f9f57f5cf2b49900b7dd369f0a79, type: 3}
   particleEffectType: 0
   scalingStat: 2

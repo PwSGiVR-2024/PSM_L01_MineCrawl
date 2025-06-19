@@ -35,16 +35,25 @@ public class CharacterBuilder : MonoBehaviour
     [SerializeField] bool Random = false;
     void Start()
     {
-        characterDataTemplate = Resources.Load<CharacterCreationData>("Spells/Player_1");
-        if (characterDataTemplate == null)
+        var original = Resources.Load<CharacterCreationData>("Spells/Player_1");
+        if (original == null)
         {
             Debug.LogError("Nie udało się załadować CharacterCreationData z Resources.");
+            return;
         }
+
+        // Tworzymy kopię instancji w pamięci — unika problemów z modyfikacją assetu
+        characterDataTemplate = Instantiate(original);
+        BattleTransferData.playerInstance = null;
+
+        if (characterDataTemplate.selectedClass == null && characterDataTemplate.selectedRace == null)
+            Debug.Log("wyczyszczono");
+
         (availableRaces, availableClasses) = CheckAvailable();
+
         if (!Random)
         {
             SetupChoices();
-
             raceDropdown.onValueChanged.AddListener(delegate { UpdateCharacterPreview(); });
         }
     }
@@ -57,7 +66,7 @@ public class CharacterBuilder : MonoBehaviour
     }
     public void RandomCharacter(CharacterRaceSO[] availableRaces, CharacterClassSO[] availableClasses)
     {
-        UnityEngine.Random.InitState(System.DateTime.Now.Millisecond + UnityEngine.Random.Range(0, 1000));
+        
 
         if (availableRaces == null || availableRaces.Length == 0)
         {
@@ -82,6 +91,7 @@ public class CharacterBuilder : MonoBehaviour
         LogManager.persistentLogLines.Clear();
         LogManager.hasShownIntro = false;
         CharacterInstance.ClearScore();
+        BattleTransferData.characterData = characterDataTemplate;
         UnityEngine.SceneManagement.SceneManager.LoadScene(2);
     }
 
@@ -102,6 +112,7 @@ public class CharacterBuilder : MonoBehaviour
         characterDataTemplate.selectedClass = selectedClass;
         LogManager.persistentLogLines.Clear();
         LogManager.hasShownIntro = false;
+        CharacterInstance.ClearScore();
         UnityEngine.SceneManagement.SceneManager.LoadScene(2); // przejdź do gry
     }
 

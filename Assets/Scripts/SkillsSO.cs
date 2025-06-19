@@ -62,7 +62,10 @@ public class SkillsSO : ScriptableObject, ISkill
     public float Vampire=> lifeSteal;
     [Header("Visual")]
     [SerializeField] private GameObject visualEffectPrefab;
+    [Header("Audio")]
+    [SerializeField] private AudioClip audioEffect;
     public GameObject VisualEffectPrefab => visualEffectPrefab;
+    public AudioClip AudioEffect => audioEffect;
     [SerializeField] private ParticleEffectType particleEffectType; 
     [Header("Scaling")]
     [SerializeField] private ScalingStatType scalingStat = ScalingStatType.None;

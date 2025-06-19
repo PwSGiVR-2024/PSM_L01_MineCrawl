@@ -10,11 +10,31 @@ public static class BattleTransferData
 {
     public static CharacterInstance playerInstance;
     public static CharacterInstance enemyInstance;
+
+    public static CharacterCreationData characterData; 
     public static string defeatedEnemyID;
     public static string previousSceneName;
     public static Vector3 playerPosition;
     public static bool cameFromBattle = false;
+
+    public static void ResetAfterBattle()
+    {
+        cameFromBattle = false;
+        defeatedEnemyID = null;
+    }
+
+    public static void Clear()
+    {
+        playerInstance = null;
+        enemyInstance = null;
+        characterData = null;
+        previousSceneName = null;
+        playerPosition = Vector3.zero;
+        cameFromBattle = false;
+        defeatedEnemyID = null;
+    }
 }
+
 
 public class BattleManager : MonoBehaviour
 {
@@ -33,6 +53,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Transform enemySpawnPoint;
     [SerializeField] private Button waitButton;
     [SerializeField] private GameObject blockerPanel;
+    [SerializeField] private AudioSource audioSource;
     private Queue<CharacterInstance> turnOrderQueue;
     private CharacterInstance currentCharacter; // kto teraz wykonuje turę
 
@@ -51,7 +72,13 @@ public class BattleManager : MonoBehaviour
 
         popup.Setup(text, color);
     }
-
+    public void PlaySkillSound(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
     void Start()
     {
         SetAnimationLock(true);
@@ -197,11 +224,14 @@ public class BattleManager : MonoBehaviour
         return 0;
     }
 
-    private IEnumerator PlaySkillEffect(GameObject effectPrefab, Transform userTransform, Transform targetTransform, ParticleEffectType effectType)
+    private IEnumerator PlaySkillEffect(GameObject effectPrefab, AudioClip clip, Transform userTransform, Transform targetTransform, ParticleEffectType effectType)
     {
         if (effectPrefab == null) yield break;
+        if (clip != null)
+        {
+            PlaySkillSound(clip);
+        }
 
-        ;
         GameObject effectInstance;
 
         switch (effectType)
@@ -291,7 +321,7 @@ public class BattleManager : MonoBehaviour
         }
         UpdateUI();
 
-        yield return StartCoroutine(PlaySkillEffect(skill.VisualEffectPrefab, fromTransform, toTransform, skill.EffectType));
+        yield return StartCoroutine(PlaySkillEffect(skill.VisualEffectPrefab, skill.AudioEffect, fromTransform, toTransform,  skill.EffectType));
         Color flashColor = skill.Damage <= 0 ? Color.green : Color.red;
         Transform flashTarget = skill.selfUse ? playerSpawnPoint : enemySpawnPoint;
         yield return StartCoroutine(FlashDamage(flashTarget, flashColor));
@@ -405,7 +435,7 @@ public class BattleManager : MonoBehaviour
                 ShowDamagePopup(amount, true, enemySpawnPoint);
             }
             
-            yield return StartCoroutine(PlaySkillEffect(chosenSkill.VisualEffectPrefab, fromTransform, toTransform, chosenSkill.EffectType));
+            yield return StartCoroutine(PlaySkillEffect(chosenSkill.VisualEffectPrefab, chosenSkill.AudioEffect, fromTransform, toTransform, chosenSkill.EffectType));
 
            
             RegenerateBasic(enemy);
