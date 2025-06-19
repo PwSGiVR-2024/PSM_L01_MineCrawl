@@ -20,6 +20,8 @@ public class MusicClass : MonoBehaviour
 
     private void Awake()
     {
+        SceneManager.LoadScene("GlobalScene", LoadSceneMode.Additive);
+
         if (instance != null && instance != this)
         {
             Destroy(gameObject);

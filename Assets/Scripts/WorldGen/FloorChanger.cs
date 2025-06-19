@@ -76,8 +76,24 @@ public class FloorChanger : FloorCreator
         currentFloor = targetFloor;
         highestFloor = Mathf.Max(highestFloor, currentFloor);
 
-        LogManager.Instance.Log($"Player reached floor {currentFloor}.");
-        LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
+
+        if (LogManager.Instance != null)
+        {
+            Tutorial.Instance.clear(); 
+
+            LogManager.Instance.Log($"Player reached floor {currentFloor}.");
+
+            if (LogManager.Instance.scoreText != null)
+                LogManager.Instance.scoreText.text = $"Score: {CharacterInstance.Score}";
+            else
+                Debug.LogWarning("LogManager scoreText is null.");
+        }
+        else
+        {
+            Debug.LogWarning("LogManager.Instance is null.");
+        }
+
+        // Load tile palettes
 
         // Reload palettes
         tilePallete = Resources.LoadAll<TileBase>("Tile Palette/TP Grass");
