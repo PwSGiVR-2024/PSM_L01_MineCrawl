@@ -22,7 +22,7 @@ public class Movement : MonoBehaviour
     private float holdDelay = 0.15f;
     private float holdTimer = 0f;
 
-    private float encounterChance = 0.3f; //0.03f
+    private float encounterChance = 0.0f; //0.03f
 
     private void Start()
     {

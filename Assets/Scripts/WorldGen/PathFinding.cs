@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using static Assets.Scripts.CreateRoom.FloorCreator;
 
@@ -116,7 +117,7 @@ namespace Assets.Scripts.WorldGen
                 walked++;
             }
 
-            tempMapData = EnsurePathConnections(tempMapData);
+            tempMapData = EnsurePathConnections(tempMapData, rooms);
 
             return tempMapData;
         }
@@ -143,10 +144,7 @@ namespace Assets.Scripts.WorldGen
             {
                 foreach (var key in weightedDirections.Keys.ToList())
                 {
-                    if (key == direction)
-                        weightedDirections[key] += amount;
-                    else
-                        weightedDirections[key] = Mathf.Max(1, weightedDirections[key] - 1);
+                    weightedDirections[key] = (key == direction) ? Mathf.Max(0, weightedDirections[direction] + amount) : Mathf.Max(0, weightedDirections[direction] - amount);
                 }
             }
 
@@ -188,14 +186,43 @@ namespace Assets.Scripts.WorldGen
             return closestRoomCoords;
         }
 
-        private static MapData EnsurePathConnections(MapData mapData)
+        private static MapData EnsurePathConnections(MapData mapData, List<Room> rooms)
         {
             MapData tempMapData = mapData;
-            //TODO
-            //1. Flood fill
-            //2. Union find
-            //3. Minimal Spanning Tree
+
+            if (rooms == null || rooms.Count < 2)
+                return tempMapData;
+
+            for (int i = 0; i < rooms.Count - 1; i++)
+            {
+                Vector2Int start = rooms[i].rootCoords;
+                Vector2Int end = rooms[i + 1].rootCoords;
+
+                int x = start.x;
+                int y = start.y;
+
+                while (x != end.x)
+                {
+                    x += (end.x > x) ? 1 : -1;
+                    if (InBounds(x, y, tempMapData))
+                        tempMapData.mapArray[x][y] = -3;
+                }
+
+                while (y != end.y)
+                {
+                    y += (end.y > y) ? 1 : -1;
+                    if (InBounds(x, y, tempMapData))
+                        tempMapData.mapArray[x][y] = -3;
+                }
+            }
+
             return tempMapData;
         }
+
+        private static bool InBounds(int x, int y, MapData mapData)
+        {
+            return x >= 0 && x < mapData.width && y >= 0 && y < mapData.height;
+        }
+
     }
 }

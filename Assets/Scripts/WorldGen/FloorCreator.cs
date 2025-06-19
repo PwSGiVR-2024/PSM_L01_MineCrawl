@@ -14,13 +14,9 @@ namespace Assets.Scripts.CreateRoom
 
     *Paths are generated using PathFinding class.
     
-
     TODO:
     - refactor
-    - fix spawning
-    - prefer unityengine.random
-    - player.transform.position = new Vector3(room.rootCoords.x, room.rootCoords.y, player.transform.position.z); insead of translate
-    - scriptable object instaed of LoadAll
+    - scriptable object instaed of LoadAll?
     */
     public class FloorCreator : MonoBehaviour
     {
@@ -92,40 +88,9 @@ namespace Assets.Scripts.CreateRoom
 
             //renderer = GameObject.FindGameObjectWithTag("GameController").GetComponent<FloorRenderer>();
             //renderer.RenderMap(mapData);
-            SpawnPlayer();
+            //SpawnPlayer();
 
             return mapData;
-        }
-
-        private void SpawnPlayer()
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-            Debug.Log("X " + lastPlayerPos);
-
-            if (lastPlayerPos.x <= 0 && lastPlayerPos.y <= 0)
-            {
-                Room room;
-                int tileValue;
-
-                // Keep searching until we find a walkable tile
-                do
-                {
-                    room = GetRandomRoom();
-                    tileValue = mapData.mapArray[room.rootCoords.x][room.rootCoords.y];
-                }
-                while (tileValue >= 0); // skip wall/invalid tiles
-
-                Vector2Int spawnPos = room.rootCoords;
-                player.transform.position = new Vector3(spawnPos.x, spawnPos.y, player.transform.position.z);
-                lastPlayerPos = spawnPos;
-
-                Debug.Log("A " + lastPlayerPos);
-            }
-            else
-            {
-                player.transform.position = new Vector3(lastPlayerPos.x, lastPlayerPos.y, player.transform.position.z);
-                Debug.Log("B " + lastPlayerPos);
-            }
         }
 
 

@@ -37,6 +37,11 @@ public class FinishAltar : FloorCreator
         return coords;
     }
 
+    public void SetCoords(Vector2 pos)
+    {
+        coords = pos;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
