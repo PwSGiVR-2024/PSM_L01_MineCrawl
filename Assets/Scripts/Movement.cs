@@ -85,7 +85,7 @@ public class Movement : MonoBehaviour
         else if (Input.GetKey(KeyCode.A)) inputDir.x = -1;
         else if (Input.GetKey(KeyCode.D)) inputDir.x = 1;
 
-        if (inputDir != Vector2Int.zero)
+        if (inputDir != Vector2Int.zero && !isMapView)
         {
             if (holdTimer <= 0f || inputDir != lastDirection)
             {
