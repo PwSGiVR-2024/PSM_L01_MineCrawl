@@ -98,6 +98,17 @@ public class BattleManager : MonoBehaviour
         InitializeTurnOrder();
         StartCoroutine(ProcessNextTurn());
     }
+    void ReactivateMapScene()
+    {
+        Scene mapScene = SceneManager.GetSceneByName("tileMapTests");
+        if (mapScene.IsValid())
+        {
+            foreach (GameObject go in mapScene.GetRootGameObjects())
+            {
+                go.SetActive(true);
+            }
+        }
+    }
     void InitializeTurnOrder()
     {
         List<CharacterInstance> allCharacters = new List<CharacterInstance> { player, enemy };
@@ -517,6 +528,7 @@ public class BattleManager : MonoBehaviour
             player.GainExp(expReward);
 
             player.OnEnemyDefeated();
+            ReactivateMapScene();
             SceneManager.UnloadSceneAsync("BattleScene");
             //SceneManager.LoadScene(BattleTransferData.previousSceneName);
         }

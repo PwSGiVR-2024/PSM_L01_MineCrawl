@@ -41,7 +41,17 @@ public class Movement : MonoBehaviour
         if (availableEnemyClasses == null || availableEnemyClasses.Length == 0)
             availableEnemyClasses = Resources.LoadAll<CharacterClassSO>("classes");
     }
-
+    void DeactivateMapScene()
+    {
+        Scene mapScene = SceneManager.GetSceneByName("tileMapTests");
+        if (mapScene.IsValid())
+        {
+            foreach (GameObject go in mapScene.GetRootGameObjects())
+            {
+                go.SetActive(false);
+            }
+        }
+    }
     private void Update()
     {
         if (isMoving)
@@ -185,6 +195,7 @@ public class Movement : MonoBehaviour
 
             LogManager.Instance.Log($"A wild {enemyTemplate.characterName} lvl: {enemyTemplate.baseLevel} appears!");
             SceneManager.LoadScene("BattleScene", LoadSceneMode.Additive);
+            DeactivateMapScene();
             //SceneManager.LoadScene("BattleScene");
         }
 
