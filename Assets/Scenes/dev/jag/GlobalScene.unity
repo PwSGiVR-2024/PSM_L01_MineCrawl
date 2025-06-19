@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 60532128}
   - component: {fileID: 60532129}
   m_Layer: 0
-  m_Name: EventSystem
+  m_Name: EventManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -225,6 +225,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreText: {fileID: 0}
+  logText: {fileID: 0}
+  scrollRect: {fileID: 0}
   maxLines: 200
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
